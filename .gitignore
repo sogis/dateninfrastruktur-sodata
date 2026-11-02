@@ -15,7 +15,8 @@ bin/
 __MACOSX/
 .AppleDouble
 .LSOverride
-Icon[]
+Icon[
+]
 
 # Thumbnails
 ._*
@@ -128,6 +129,9 @@ node_modules/
 *.zip
 *.tar.gz
 *.rar
+
+# Gradle wrapper must remain committed even though other JARs are ignored.
+!gradle/wrapper/gradle-wrapper.jar
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
