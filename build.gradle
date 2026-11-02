@@ -1,0 +1,286 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.graalvm.buildtools.native' version '1.1.14'
+    id 'gg.jte.gradle' version '3.2.4'
+}
+
+graalvmNative {
+    binaries {
+        main {
+            // Deploy the same image on nodes with different CPU feature sets.
+            buildArgs.add('-march=compatibility')
+            buildArgs.add('--initialize-at-run-time=org.apache.lucene.util.AttributeFactory')
+        }
+    }
+}
+
+group = 'ch.so.agi'
+description = 'Datenportal Webanwendung Kanton Solothurn'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    luceneVersion = '10.3.2'
+    playwrightVersion = '1.60.0'
+}
+
+def gitCommit = 'unknown'
+try {
+    def gitDir = file('.git')
+    def headFile = new File(gitDir, 'HEAD')
+    if (headFile.exists()) {
+        def head = headFile.text.trim()
+        if (head.startsWith('ref: ')) {
+            def ref = head.substring(5)
+            def refFile = new File(gitDir, ref)
+            if (refFile.exists()) {
+                def resolvedGitCommit = refFile.text.trim()
+                if (resolvedGitCommit) {
+                    gitCommit = resolvedGitCommit.take(12)
+                }
+            } else {
+                def packedRefsFile = new File(gitDir, 'packed-refs')
+                if (packedRefsFile.exists()) {
+                    def packedRefLine = packedRefsFile.readLines().find { line ->
+                        !line.startsWith('#') && !line.startsWith('^') && line.endsWith(" ${ref}")
+                    }
+                    if (packedRefLine) {
+                        gitCommit = packedRefLine.tokenize(' ')[0].take(12)
+                    }
+                }
+            }
+        } else if (head) {
+            gitCommit = head.take(12)
+        }
+    }
+} catch (Exception ignored) {
+}
+
+// Container-Builds kopieren kein .git; der Commit kann per -PgitCommit uebergeben werden.
+if (project.hasProperty('gitCommit') && project.gitCommit.toString().isBlank() == false) {
+    gitCommit = project.gitCommit.toString()
+}
+
+def gitCommitProvider = providers.provider {
+    gitCommit
+}
+
+def exploreFrontendDir = layout.projectDirectory.dir('src/main/frontend/explore')
+def exploreGeneratedResourcesDir = layout.buildDirectory.dir('generated-resources/explore')
+def webRGeneratedResourcesDir = layout.buildDirectory.dir('generated-resources/webr')
+def precompressedStaticResourcesDir = layout.buildDirectory.dir('generated-resources/precompressed-static')
+
+// Damit sind die Inhalte dieses Verzeichnisses via Classpath greifbar.
+sourceSets {
+    main {
+        resources {
+            srcDir 'spec/fixtures'
+            srcDir exploreGeneratedResourcesDir
+            srcDir webRGeneratedResourcesDir
+            srcDir precompressedStaticResourcesDir
+        }
+    }
+}
+
+dependencies {
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-json'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'gg.jte:jte-spring-boot-starter-4:3.2.4'
+    implementation 'org.commonmark:commonmark:0.30.0'
+
+    implementation "org.apache.lucene:lucene-core:${luceneVersion}"
+    implementation "org.apache.lucene:lucene-analysis-common:${luceneVersion}"
+    implementation "org.apache.lucene:lucene-queryparser:${luceneVersion}"
+
+    testImplementation "com.microsoft.playwright:playwright:${playwrightVersion}"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform {
+        excludeTags 'playwright'
+    }
+}
+
+tasks.register('npmInstallExplore', Exec) {
+    group = 'build'
+    description = 'Installs the npm dependencies for the Explore frontend island.'
+    workingDir = exploreFrontendDir.asFile
+    commandLine 'npm', 'ci'
+    inputs.file exploreFrontendDir.file('package.json')
+    inputs.file exploreFrontendDir.file('package-lock.json')
+    outputs.dir exploreFrontendDir.dir('node_modules')
+}
+
+tasks.register('npmTestExplore', Exec) {
+    group = 'verification'
+    description = 'Runs Vitest tests for the Explore frontend island.'
+    workingDir = exploreFrontendDir.asFile
+    commandLine 'npm', 'test'
+    dependsOn tasks.named('npmInstallExplore')
+    inputs.dir exploreFrontendDir.dir('src')
+    inputs.file exploreFrontendDir.file('package.json')
+    inputs.file exploreFrontendDir.file('package-lock.json')
+    inputs.file exploreFrontendDir.file('tsconfig.json')
+    inputs.file exploreFrontendDir.file('vite.config.ts')
+}
+
+tasks.register('npmTypecheckExplore', Exec) {
+    group = 'verification'
+    description = 'Runs TypeScript type checking for the Explore frontend island.'
+    workingDir = exploreFrontendDir.asFile
+    commandLine 'npm', 'run', 'typecheck'
+    dependsOn tasks.named('npmInstallExplore')
+    inputs.dir exploreFrontendDir.dir('src')
+    inputs.file exploreFrontendDir.file('package.json')
+    inputs.file exploreFrontendDir.file('package-lock.json')
+    inputs.file exploreFrontendDir.file('tsconfig.json')
+    inputs.file exploreFrontendDir.file('vite.config.ts')
+}
+
+tasks.register('npmBuildExplore', Exec) {
+    group = 'build'
+    description = 'Builds the Explore frontend island into generated Spring static resources.'
+    workingDir = exploreFrontendDir.asFile
+    commandLine 'npm', 'run', 'build'
+    dependsOn tasks.named('npmInstallExplore')
+    inputs.dir exploreFrontendDir.dir('src')
+    inputs.file exploreFrontendDir.file('package.json')
+    inputs.file exploreFrontendDir.file('package-lock.json')
+    inputs.file exploreFrontendDir.file('tsconfig.json')
+    inputs.file exploreFrontendDir.file('vite.config.ts')
+    outputs.dir exploreGeneratedResourcesDir
+}
+
+tasks.register('copyWebRRuntime', Copy) {
+    group = 'build'
+    description = 'Copies the WebR runtime into generated same-origin Spring static resources.'
+    dependsOn tasks.named('npmInstallExplore')
+    from exploreFrontendDir.dir('node_modules/webr/dist')
+    exclude '**/*.map'
+    into webRGeneratedResourcesDir.map { it.dir('static/webr/0.6.0') }
+}
+
+tasks.register('mirrorWebRPackages', Exec) {
+    group = 'build'
+    description = 'Builds the curated same-origin WebR package repository.'
+    workingDir = exploreFrontendDir.asFile
+    commandLine 'node', 'scripts/mirrorWebRPackages.mjs'
+    dependsOn tasks.named('npmInstallExplore')
+    inputs.file exploreFrontendDir.file('scripts/mirrorWebRPackages.mjs')
+    inputs.file exploreFrontendDir.file('scripts/webr-packages.lock.json')
+    outputs.dir webRGeneratedResourcesDir.map { it.dir('static/webr-packages') }
+}
+
+tasks.register('precompressStaticAssets', Exec) {
+    group = 'build'
+    description = 'Precompresses Explore, DuckDB and WebR static assets with Brotli and Gzip.'
+    workingDir = exploreFrontendDir.asFile
+    commandLine 'node', 'scripts/precompressStaticAssets.mjs'
+    dependsOn tasks.named('npmBuildExplore'), tasks.named('copyWebRRuntime'), tasks.named('mirrorWebRPackages')
+    inputs.dir exploreGeneratedResourcesDir
+    inputs.dir webRGeneratedResourcesDir
+    inputs.dir layout.projectDirectory.dir('src/main/resources/static/explore-extensions')
+    inputs.file exploreFrontendDir.file('scripts/precompressStaticAssets.mjs')
+    outputs.dir precompressedStaticResourcesDir
+}
+
+tasks.named('processResources') {
+    dependsOn tasks.named('precompressStaticAssets')
+}
+
+def playwrightBrowsersPath = layout.projectDirectory.dir('.gradle/playwright-browsers').asFile.absolutePath
+def playwrightInstallWithDeps = providers.gradleProperty('datenportal.playwright.withDeps')
+        .getOrElse('false')
+        .toBoolean()
+
+def playwrightInstallArgs = { String browser ->
+    def args = ['install']
+    if (playwrightInstallWithDeps) {
+        args << '--with-deps'
+    }
+    args << browser
+    args
+}
+
+tasks.register('installPlaywrightChromium', JavaExec) {
+    group = 'verification'
+    description = 'Installs the Chromium browser used by Playwright tests, optionally with system dependencies.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.microsoft.playwright.CLI'
+    args playwrightInstallArgs('chromium')
+    environment 'PLAYWRIGHT_BROWSERS_PATH', playwrightBrowsersPath
+}
+
+tasks.register('installPlaywrightFirefox', JavaExec) {
+    group = 'verification'
+    description = 'Installs the Firefox browser used by Playwright tests, optionally with system dependencies.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.microsoft.playwright.CLI'
+    args playwrightInstallArgs('firefox')
+    environment 'PLAYWRIGHT_BROWSERS_PATH', playwrightBrowsersPath
+}
+
+tasks.register('playwrightTest', Test) {
+    group = 'verification'
+    description = 'Runs Playwright browser tests.'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    maxParallelForks = 1
+    shouldRunAfter tasks.named('test')
+    dependsOn tasks.named('installPlaywrightChromium')
+    dependsOn tasks.named('installPlaywrightFirefox')
+    environment 'PLAYWRIGHT_BROWSERS_PATH', playwrightBrowsersPath
+    systemProperty 'datenportal.playwright.liveWmts', System.getProperty('datenportal.playwright.liveWmts', 'false')
+    if (System.getProperty('datenportal.playwright.webr') != null) {
+        systemProperty 'datenportal.playwright.webr', System.getProperty('datenportal.playwright.webr')
+    }
+    testLogging {
+        events 'failed'
+        exceptionFormat 'full'
+    }
+    useJUnitPlatform {
+        includeTags 'playwright'
+    }
+}
+
+jte {
+    generate()
+    binaryStaticContent = true
+}
+
+springBoot {
+    buildInfo {
+        properties {
+            additional = [
+                'commit': gitCommitProvider
+            ]
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('playwrightTest')
+    dependsOn tasks.named('npmTestExplore')
+    dependsOn tasks.named('npmTypecheckExplore')
+}
+
+tasks.named('wrapper') {
+    gradleVersion = '9.5.1'
+    distributionType = Wrapper.DistributionType.BIN
+}

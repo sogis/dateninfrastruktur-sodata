@@ -1,0 +1,76 @@
+spring:
+  application:
+    name: datenportal-sodata
+  web:
+    error:
+      include-message: never
+      include-stacktrace: never
+      include-binding-errors: never
+      whitelabel:
+        enabled: false
+
+server:
+  server-header: ""
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState
+        readiness:
+          include: readinessState,catalogSnapshot,catalogReload,catalogSearchIndex
+    info:
+      enabled: true
+  info:
+    env:
+      enabled: false
+    java:
+      enabled: true
+    os:
+      enabled: false
+  health:
+    diskspace:
+      enabled: false
+
+datenportal:
+  catalog:
+    http-connect-timeout: 5s
+    http-read-timeout: 30s
+    max-size: 50MB
+    download-url: ${DOWNLOAD_URL:}
+  admin:
+    reload-token: ${DATENPORTAL_ADMIN_RELOAD_TOKEN:}
+  security:
+    csp:
+      connect-src:
+        - "'self'"
+        - "https://data.so.ch"
+      include-catalog-download-origin: true
+  explore:
+    enabled: true
+    max-preview-rows: 100
+    max-result-rows: 10000
+    query-timeout-ms: 30000
+    charts-enabled: true
+    webr-enabled: true
+  search:
+    default-page-size: 10
+    max-page-size: 100
+  web-components:
+    enabled: true
+    version: "0.1.10"
+    asset-base-path: "/vendor/so-web-components/0.1.10"
+    use-cdn: false
+
+gg:
+  jte:
+    development-mode: false
+    use-precompiled-templates: true

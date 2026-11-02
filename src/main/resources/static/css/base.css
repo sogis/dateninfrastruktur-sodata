@@ -1,0 +1,105 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  font-family: var(--dp-font-sans);
+  font-size: 18px;
+  color: var(--dp-color-text);
+  /*background: linear-gradient(180deg, #ffffff 0%, #fbfcfd 100%);*/
+  background: #ffffff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--dp-color-accent);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--dp-color-focus);
+  outline-offset: 3px;
+}
+
+p {
+  line-height: 1.6;
+}
+
+/* Metadata prose uses the surrounding typography in every presentation. */
+.dp-metadata-text {
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.dp-metadata-text p,
+.dp-metadata-text ul,
+.dp-metadata-text ol {
+  margin: 0 0 var(--dp-space-3);
+}
+
+.dp-metadata-text > :last-child,
+.dp-metadata-text li > :last-child {
+  margin-bottom: 0;
+}
+
+.dp-metadata-text ul,
+.dp-metadata-text ol {
+  padding-left: var(--dp-space-5);
+}
+
+.dp-metadata-text code,
+.dp-entry-description code,
+.dp-result-card__description code {
+  font-family: var(--dp-font-mono);
+  font-size: .9em;
+  background: var(--dp-color-surface-subtle);
+  border-radius: var(--dp-radius-sm);
+  padding: .05em .2em;
+  overflow-wrap: anywhere;
+}
+
+.dp-skip-link {
+  position: absolute;
+  left: var(--dp-space-4);
+  top: -3rem;
+  z-index: 1000;
+  padding: var(--dp-space-2) var(--dp-space-4);
+  border-radius: var(--dp-radius-sm);
+  background: var(--dp-color-accent);
+  color: #ffffff;
+}
+
+.dp-skip-link:focus {
+  top: var(--dp-space-4);
+}
+
+.dp-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.dp-print-only {
+  display: none;
+}
