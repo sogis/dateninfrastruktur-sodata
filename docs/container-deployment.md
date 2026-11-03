@@ -1,13 +1,13 @@
 # Container-Deployment
 
 Diese Anleitung beschreibt den Containerbetrieb der Datenportal-Webanwendung.
-Das Standardimage `datenportal-sodata` enthält ein GraalVM Native Image. Das
-JVM-Fallback wird separat als `datenportal-sodata-jvm` veröffentlicht. Beide
+Das Standardimage `dateninfrastruktur-sodata` enthält ein GraalVM Native Image. Das
+JVM-Fallback wird separat als `dateninfrastruktur-sodata-jvm` veröffentlicht. Beide
 Images verwenden Port `8080`, dieselben Umgebungsvariablen und denselben
 Liveness-Healthcheck.
 
 Der Dockerfile und seine Buildlogik liegen bewusst in diesem Repository. Der
-Dev-Stack `datenportal-dev-stack` baut und verwendet dieses Image, definiert
+Dev-Stack `dateninfrastruktur-dev-stack` baut und verwendet dieses Image, definiert
 aber keine eigene Kopie der Buildlogik.
 
 ## Betriebsmodell
@@ -41,8 +41,8 @@ im `PATH`.
 ## Image bauen
 
 ```bash
-docker build -t datenportal-sodata:local .
-docker build --target jvm-runtime -t datenportal-sodata-jvm:local .
+docker build -t dateninfrastruktur-sodata:local .
+docker build --target jvm-runtime -t dateninfrastruktur-sodata-jvm:local .
 ```
 
 Der erste Befehl baut das Native-Image und ist der Standard-Target des
@@ -65,9 +65,9 @@ Buildargumente:
 | Argument | Default | Wirkung |
 |---|---|---|
 | `TEMURIN_JDK_IMAGE` | `eclipse-temurin:25-jdk` | JVM-Build-Stage mit Gradle und Node |
-| `JVM_RUNTIME_IMAGE` | `registry.access.redhat.com/ubi9/openjdk-25-runtime` | Red Hat UBI Laufzeitbasis für das JVM-Image |
+| `JVM_RUNTIME_IMAGE` | `registry.access.redhat.com/ubi9/openjdk-25-runtime@sha256:2ddacad5332f4e481353668f210623f7e7420f1561515f5686e5abd33cd6d38f` | Red Hat UBI Laufzeitbasis für das JVM-Image, per Digest gepinnt |
 | `GRAALVM_NATIVE_IMAGE` | `ghcr.io/graalvm/native-image-community:25-ol9` | GraalVM Native-Image-Builder auf Oracle Linux 9 |
-| `NATIVE_RUNTIME_IMAGE` | `registry.access.redhat.com/ubi9/ubi-minimal:latest` | Red Hat UBI 9 Laufzeitbasis für das Native-Image |
+| `NATIVE_RUNTIME_IMAGE` | `registry.access.redhat.com/ubi9/ubi-minimal@sha256:dfa0eb04abc59221544e74862432496add1f491f915c9b531880f91affc0e12c` | Red Hat UBI 9 Laufzeitbasis für das Native-Image, per Digest gepinnt |
 | `NODE_IMAGE` | `node:22-bookworm-slim` | Quelle für Node 22 im Build-Stage |
 | `IMAGE_VERSION` | `local` | Label `org.opencontainers.image.version` |
 | `GIT_COMMIT` | `unknown` | Label `org.opencontainers.image.revision` und Commit in `build-info.properties` |
@@ -78,7 +78,7 @@ Mit Commit-Kennung:
 docker build \
   --build-arg IMAGE_VERSION=0.1.0 \
   --build-arg GIT_COMMIT="$(git rev-parse --short=12 HEAD)" \
-  -t datenportal-sodata:0.1.0 \
+  -t dateninfrastruktur-sodata:0.1.0 \
   .
 ```
 
@@ -117,25 +117,26 @@ der Workflow die gemeinsamen Versions- und `latest`-Tags als Multiarch-Manifeste
 veröffentlicht. Docker wählt beim Pull automatisch die passende Architektur.
 Pull Requests bauen und prüfen beide Architekturen, publizieren aber keine Images.
 
-Die kanonischen Tags bleiben:
+Jeder erfolgreiche Push auf `main` veröffentlicht die folgenden Tags; eine
+Tag-Strategie gibt es derzeit nicht:
 
 ```text
-docker.io/sogis/datenportal-sodata:0.1.<github-run-number>
-docker.io/sogis/datenportal-sodata:latest
-docker.io/sogis/datenportal-sodata-jvm:0.1.<github-run-number>
-docker.io/sogis/datenportal-sodata-jvm:latest
-ghcr.io/sogis/datenportal-sodata:0.1.<github-run-number>
-ghcr.io/sogis/datenportal-sodata:latest
-ghcr.io/sogis/datenportal-sodata-jvm:0.1.<github-run-number>
-ghcr.io/sogis/datenportal-sodata-jvm:latest
+docker.io/sogis/dateninfrastruktur-sodata:0.1.<github-run-number>
+docker.io/sogis/dateninfrastruktur-sodata:latest
+docker.io/sogis/dateninfrastruktur-sodata-jvm:0.1.<github-run-number>
+docker.io/sogis/dateninfrastruktur-sodata-jvm:latest
+ghcr.io/sogis/dateninfrastruktur-sodata:0.1.<github-run-number>
+ghcr.io/sogis/dateninfrastruktur-sodata:latest
+ghcr.io/sogis/dateninfrastruktur-sodata-jvm:0.1.<github-run-number>
+ghcr.io/sogis/dateninfrastruktur-sodata-jvm:latest
 ```
 
 Zusätzlich bleiben die geprüften Architektur-Images unter Versions-Tags mit
 Suffix verfügbar, zum Beispiel:
 
 ```text
-docker.io/sogis/datenportal-sodata:0.1.<github-run-number>-amd64
-docker.io/sogis/datenportal-sodata:0.1.<github-run-number>-arm64
+docker.io/sogis/dateninfrastruktur-sodata:0.1.<github-run-number>-amd64
+docker.io/sogis/dateninfrastruktur-sodata:0.1.<github-run-number>-arm64
 ```
 
 Für jedes Image in beiden Registries wird zuerst das Versions-Manifest aus
@@ -144,20 +145,19 @@ Versions-Manifeste erfolgreich veröffentlicht wurden. Die Manifest-Inhalte
 lassen sich mit folgendem Befehl prüfen:
 
 ```bash
-docker buildx imagetools inspect docker.io/sogis/datenportal-sodata:latest
+docker buildx imagetools inspect docker.io/sogis/dateninfrastruktur-sodata:latest
 ```
 
 Die Ausgabe muss sowohl `linux/amd64` als auch `linux/arm64` aufführen.
 
 Der Präfix `0.1` ist als Workflow-Variable manuell gepflegt. `latest` zeigt je
 Repository auf den zuletzt erfolgreich für beide Architekturen geprüften Push
-auf `main`; produktive Deployments können weiterhin auf einen konkreten
-Versionstag zeigen.
+auf `main`; produktive Deployments können auf einen konkreten Lauf-Tag zeigen.
 
 Für den Push nach Docker Hub müssen im GitHub-Repository die Secrets
-`DOCKERHUB_USERNAME` und `DOCKERHUB_TOKEN` hinterlegt sein. Der Token muss
-Schreibrechte auf `sogis/datenportal-sodata` und
-`sogis/datenportal-sodata-jvm` besitzen. Für GHCR verwendet der
+`DOCKER_USERNAME` und `DOCKER_PASSWORD` hinterlegt sein. Der Token muss
+Schreibrechte auf `sogis/dateninfrastruktur-sodata` und
+`sogis/dateninfrastruktur-sodata-jvm` besitzen. Für GHCR verwendet der
 Workflow den automatisch bereitgestellten `GITHUB_TOKEN` mit
 `packages: write`. Beide Docker-Hub-Repositories müssen vor dem ersten Lauf
 angelegt sein. Nach dem ersten erfolgreichen GHCR-Push müssen die neu
@@ -191,7 +191,7 @@ Liveness und `/actuator/health/readiness` auf Port `8080` für Readiness.
 Der lokale Build und der Dev-Stack bleiben unverändert:
 
 ```bash
-docker build -t datenportal-sodata:local .
+docker build -t dateninfrastruktur-sodata:local .
 ```
 
 ## Container-Regressionstest für Native und JVM
@@ -203,11 +203,11 @@ Classpath-Fixtures und entfernt seinen Container auch bei einem Fehler.
 Es sind weder ein Dev-Stack noch S3 oder Schwester-Repositories erforderlich.
 
 ```bash
-docker build --target native-runtime -t datenportal-sodata:native-test .
-python3 tools/test-container.py --image datenportal-sodata:native-test --runtime native
+docker build --target native-runtime -t dateninfrastruktur-sodata:native-test .
+python3 tools/test-container.py --image dateninfrastruktur-sodata:native-test --runtime native
 
-docker build --target jvm-runtime -t datenportal-sodata-jvm:jvm-test .
-python3 tools/test-container.py --image datenportal-sodata-jvm:jvm-test --runtime jvm
+docker build --target jvm-runtime -t dateninfrastruktur-sodata-jvm:jvm-test .
+python3 tools/test-container.py --image dateninfrastruktur-sodata-jvm:jvm-test --runtime jvm
 ```
 
 `--runtime native` verlangt den Entrypoint `/opt/datenportal/app`; der Test
@@ -242,7 +242,7 @@ auch sämtliche Accessoren dieses DTOs. Die drei
 Explore-Enums registrieren zusätzlich ihre `@JsonValue`-Methoden, damit die
 bestehenden kleingeschriebenen JSON-Werte erhalten bleiben.
 
-Das veröffentlichte native Image `0.1.10` enthält diese Hints noch nicht und
+Das damalige veröffentlichte native Image `sogis/datenportal-sodata:0.1.10` enthält diese Hints noch nicht und
 liefert bei Explore HTTP 500 (`UnsupportedFeatureError` für
 `ExploreContextDto`). Als einmalige Negativkontrolle muss der Test deshalb
 an diesem Image scheitern:
@@ -264,10 +264,10 @@ explizit per Umgebungsvariablen gewählt:
 docker run --rm -p 18082:8080 \
   -e DATENPORTAL_CATALOG_SOURCE_TYPE=classpath \
   -e DATENPORTAL_CATALOG_CLASSPATH_LOCATION=published_catalog_full_62_entries.xtf \
-  -e DATENPORTAL_CATALOG_DOWNLOAD_URL=http://localhost:8081/ch.so.datenportal/downloads \
+  -e DATENPORTAL_CATALOG_DOWNLOAD_URL=http://localhost:18081/ch.so.daten \
   -e DATENPORTAL_CATALOG_DUCKDB_SOURCE_TYPE=classpath \
   -e DATENPORTAL_CATALOG_DUCKDB_CLASSPATH_LOCATION=catalog.duckdb \
-  datenportal-sodata:local
+  dateninfrastruktur-sodata:local
 ```
 
 Erwartete Prüfungen:
@@ -294,8 +294,8 @@ werden sie als Umgebungsvariablen übergeben (Spring-Boot-Relaxed-Binding):
 | `SPRING_PROFILES_ACTIVE` | nur für Host-`bootRun`; im Container nicht verwenden (JTE-Development-Mode erwartet Template-Quellen aus dem Checkout) |
 | `DATENPORTAL_ADMIN_RELOAD_TOKEN` | Token für `/admin/catalog/reload` und `/admin/catalog/status`; ohne Wert antworten die Endpunkte `503` |
 | `DATENPORTAL_CATALOG_SOURCE_TYPE` | `manifest` im Stackbetrieb; alternativ `classpath`, `http`, `file` |
-| `DATENPORTAL_CATALOG_HTTP_URL` | Manifestadresse, im Compose-Netz z. B. `http://jenkins:8081/ch.so.daten/current.json` |
-| `DATENPORTAL_CATALOG_DOWNLOAD_URL` | öffentlich erreichbare Downloadbasis für den Browser, z. B. `http://localhost:8081/ch.so.daten` |
+| `DATENPORTAL_CATALOG_HTTP_URL` | Manifestadresse, im Compose-Netz z. B. `http://jenkins:18081/ch.so.daten/current.json` |
+| `DATENPORTAL_CATALOG_DOWNLOAD_URL` | öffentlich erreichbare Downloadbasis für den Browser, z. B. `http://localhost:18081/ch.so.daten` |
 | `DATENPORTAL_CATALOG_DUCKDB_SOURCE_TYPE` | `manifest` (gemeinsam mit XTF), `classpath` (Fixtures), `file` oder `http` |
 | `DATENPORTAL_CATALOG_DUCKDB_CLASSPATH_LOCATION` | `catalog.duckdb` für die gebündelte Fixture |
 | `SERVER_PORT` | optional; Default im Container ist `8080` |
@@ -306,20 +306,20 @@ Beispiel mit Manifestquelle:
 docker run --rm -p 18082:8080 \
   -e DATENPORTAL_ADMIN_RELOAD_TOKEN=change-me \
   -e DATENPORTAL_CATALOG_SOURCE_TYPE=manifest \
-  -e DATENPORTAL_CATALOG_HTTP_URL=http://host.docker.internal:8081/ch.so.daten/current.json \
-  -e DATENPORTAL_CATALOG_DOWNLOAD_URL=http://localhost:8081/ch.so.daten \
+  -e DATENPORTAL_CATALOG_HTTP_URL=http://host.docker.internal:18081/ch.so.daten/current.json \
+  -e DATENPORTAL_CATALOG_DOWNLOAD_URL=http://localhost:18081/ch.so.daten \
   -e DATENPORTAL_CATALOG_DUCKDB_SOURCE_TYPE=manifest \
-  datenportal-sodata:local
+  dateninfrastruktur-sodata:local
 ```
 
 ## Betrieb im Dev-Stack
 
 Der Dev-Stack startet die Anwendung als Compose-Service `sodata`:
 
-- Öffentlicher Einstieg über APISIX auf `http://localhost:8081/`; Sodata hat
+- Öffentlicher Einstieg über APISIX auf `http://localhost:18081/`; Sodata hat
   keinen eigenen Host-Port und verwendet intern Port `8080`.
-- Manifest intern über `http://jenkins:8081/ch.so.daten/current.json`,
-  öffentliche Downloadbasis `http://localhost:8081/ch.so.daten`.
+- Manifest intern über `http://jenkins:18081/ch.so.daten/current.json`,
+  öffentliche Downloadbasis `http://localhost:18081/ch.so.daten`.
 - `scripts/up.sh` führt einen erfolgreichen Seed aus, erzeugt den lokalen
   Erstbestand bei HTTP 404 und startet danach Sodata automatisch.
 - Vorhandene Manifeste werden samt XTF-/DuckDB-Artefakten geprüft und erhalten;
@@ -331,7 +331,7 @@ Der Dev-Stack startet die Anwendung als Compose-Service `sodata`:
 
 Details, Startoptionen und die Reihenfolge nach der Erstpublikation stehen in
 der Stack-Dokumentation
-(`datenportal-dev-stack/README.md` und `docs/biblios/inbetriebnahme.adoc`).
+(`dateninfrastruktur-dev-stack/README.md` und `docs/biblios/inbetriebnahme.adoc`).
 
 ## Health, Probes und Neustart
 
@@ -396,7 +396,7 @@ ab, damit neu hinzukommende Templates ebenfalls im Native-Image funktionieren.
 ## Kompatibilität mit `0.1.11` und dem OpenShift-Stack
 
 Vergleichsstand: Portal-Commit `49ef7af`, OpenShift-Stack-Commit `28a281d`.
-Das veröffentlichte Portalimage `sogis/datenportal-sodata:0.1.11` verweist für
+Das damalige Portalimage `sogis/datenportal-sodata:0.1.11` verweist für
 AMD64 und ARM64 auf Commit `5214dfa`. Seit diesem Stand kamen
 Datumsdarstellung in Charts, eingeschränktes Markdown und Drucklayouts hinzu.
 Diese Änderungen erfordern keine Migration der Stack-Schnittstellen.
@@ -430,7 +430,7 @@ CPU-Fehler, erfolgreiche Probes und Katalog-/Explore-Seiten zu prüfen.
 | Native-Binary meldet fehlende CPU-Funktionen | Mit `-march=compatibility` neu bauen und neuen Image-Tag/Digest deployen; bestehende Images enthalten die alte CPU-Vorgabe |
 | Container startet wiederholt neu | Manifestadresse und `current.json` prüfen; Logs mit `docker compose logs sodata` bzw. `docker logs <container>` |
 | Healthcheck bleibt `unhealthy`, Anwendung läuft | Startzeit verkürzen/`start-period` prüfen; `/actuator/health/liveness` direkt mit `curl` testen |
-| Port belegt | Im Stack `GARAGE_PUBLIC_PORT` (Default 8081) prüfen; bei Standalone-Containern das gewählte `-p`-Mapping |
+| Port belegt | Im Stack `GATEWAY_PORT` (Default 18081) prüfen; bei Standalone-Containern das gewählte `-p`-Mapping |
 | Reload `503` | `DATENPORTAL_ADMIN_RELOAD_TOKEN` im Container leer |
 | Reload `401` | Token stimmt nicht mit Jenkins `DATENPORTAL_PORTAL_RELOAD_TOKEN` überein |
 | Erkunden zeigt falsche/fehlende Tabellen | Manifestgeneration, Reload und View-Erzeugung im GRETL-Job prüfen; offene Playgrounds neu laden |

@@ -106,7 +106,7 @@ Verhalten:
 DuckDB-Wasm liest Parquet-Dateien im Browser. Echte Download-URLs muessen deshalb browserseitig abrufbar sein. Die CSP-`connect-src`-Direktive erlaubt standardmaessig same-origin, `https://data.so.ch` und automatisch die Origin aus `datenportal.catalog.download-url`:
 
 ```text
-connect-src 'self' https://data.so.ch http://localhost:8081
+connect-src 'self' https://data.so.ch http://localhost:18081
 ```
 
 Die konkrete Download-Basis kann lokal ueber `DOWNLOAD_URL` bzw. `datenportal.catalog.download-url` gesetzt werden. XTF-Dateien koennen dafuer `${DOWNLOAD_URL}/datei.parquet` verwenden; die Anwendung ersetzt den Platzhalter vor dem XML-Parsing und bereinigt doppelte Slashes an der Join-Stelle.

@@ -41,7 +41,11 @@ Nicht enthalten:
 Für den lokalen Containerbetrieb gibt es native und JVM-Buildziele im Dockerfile;
 Details stehen in [Container-Deployment](docs/container-deployment.md). Der
 GitHub-Workflow baut und prüft beide Images bei Pull Requests und publiziert sie
-bei Pushes auf `main` nach Docker Hub und GitHub Container Registry.
+bei jedem Push auf `main` nach Docker Hub und GitHub Container Registry:
+`dateninfrastruktur-sodata` und `dateninfrastruktur-sodata-jvm`, jeweils mit
+dem Lauf-Tag `0.1.<run-number>` und `latest`. Benötigt werden die
+Repository-Secrets `DOCKER_USERNAME` und `DOCKER_PASSWORD`; GHCR verwendet
+`GITHUB_TOKEN` mit `packages: write`.
 
 ## Voraussetzungen
 
@@ -75,30 +79,30 @@ SPRING_PROFILES_ACTIVE=local ./gradlew bootRun --args='--server.port=8082'
 ```
 
 Der Standardstart verwendet gebündelte Fixtures. Im lokalen Gesamtstack
-(`datenportal-dev-stack`) läuft das Portal hinter APISIX unter
-`http://localhost:8081/`, mit gemeinsamer Manifestquelle für XTF und DuckDB.
-`scripts/up.sh` im Stack richtet Garage ein, wartet auf einen erfolgreichen
-Seed, erzeugt bei einem frischen lokalen Bestand die Erstpublikation und startet
-das Portal. Veröffentlichte Images werden verwendet; `--local-sodata` baut
-dieses Repository. Ein fehlender gemeinsamer Reload-Token wird lokal erzeugt. Die Host-Variante bleibt als Alternative
+(`dateninfrastruktur-dev-stack`) läuft das Portal hinter APISIX unter
+`http://localhost:18081/`, mit gemeinsamer Manifestquelle für XTF und DuckDB.
+`./scripts/up.sh` im Stack baut die lokalen Images, richtet Garage ein, wartet
+auf einen erfolgreichen Seed, erzeugt bei einem frischen lokalen Bestand die
+Erstpublikation und startet das Portal. `./scripts/up.sh --skip-build`
+verwendet bereits gebaute lokale Images. Ein fehlender gemeinsamer Reload-Token wird lokal erzeugt. Die Host-Variante bleibt als Alternative
 dokumentiert in [Betrieb](docs/operations.md#an-den-lokalen-dev-stack-anschliessen).
 
 Container-Schnellstart mit den gebündelten Fixtures:
 
 ```bash
-docker build -t datenportal-sodata:local .
+docker build -t dateninfrastruktur-sodata:local .
 docker run --rm -p 18082:8080 \
   -e DATENPORTAL_CATALOG_SOURCE_TYPE=classpath \
   -e DATENPORTAL_CATALOG_CLASSPATH_LOCATION=published_catalog_full_62_entries.xtf \
   -e DATENPORTAL_CATALOG_DUCKDB_SOURCE_TYPE=classpath \
   -e DATENPORTAL_CATALOG_DUCKDB_CLASSPATH_LOCATION=catalog.duckdb \
-  datenportal-sodata:local
+  dateninfrastruktur-sodata:local
 ```
 
 Das Standard-Dockerziel baut das Native-Image. Für das JVM-Fallback:
 
 ```bash
-docker build --target jvm-runtime -t datenportal-sodata-jvm:local .
+docker build --target jvm-runtime -t dateninfrastruktur-sodata-jvm:local .
 ```
 
 Das Profil `local` ist für den Host-`bootRun` gedacht; im Container werden die

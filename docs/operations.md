@@ -25,14 +25,13 @@ Im Dev-Stack `./scripts/up.sh` verwenden. Der gemeinsame Start richtet
 Garage ein, seedet erfolgreich, erzeugt bei HTTP 404 den lokalen Erstbestand
 und startet danach das Portal. Ein bestehender Publikationsstand wird geprüft
 und erhalten. Die vollständige Reihenfolge steht in der
-[Stack-Inbetriebnahme](https://codeberg.org/edigonzales/datenportal-dev-stack/src/branch/main/docs/biblios/inbetriebnahme.adoc).
+[Betriebsanleitung des Dev-Stacks](https://github.com/sogis/dateninfrastruktur-dev-stack).
 
-Im Dev-Stack läuft das Portal als Compose-Service `sodata` hinter APISIX unter `http://localhost:8081/`:
+Im Dev-Stack läuft das Portal als Compose-Service `sodata` hinter APISIX unter `http://localhost:18081/`:
 
-- Der Stack baut das Image lokal aus diesem Repository
-  (`./scripts/up.sh --local-sodata`) oder verwendet ein Registry-Image mit
-  lokalem Fallback.
-- Compose setzt die Manifestadresse intern (`http://jenkins:8081/ch.so.daten/current.json`), die
+- Der Stack baut das Image lokal aus diesem Repository (`./scripts/up.sh`)
+  oder verwendet mit `--skip-build` bereits gebaute lokale Images.
+- Compose setzt die Manifestadresse intern (`http://jenkins:18081/ch.so.daten/current.json`), die
   öffentliche Downloadbasis auf dem Host-Port und DuckDB auf `source-type=manifest`.
 - Derselbe `.env`-Wert `DATENPORTAL_PORTAL_RELOAD_TOKEN` versorgt Jenkins und
   den Portal-Container; die frühere Host-Gateway-Adresse entfällt.
@@ -68,7 +67,7 @@ werden; bei Reload bleibt der alte Zustand erhalten.
 Alternativ mit JDK 25 im Portal-Repository auf freiem Host-Port 8082 starten:
 
 ```bash
-SPRING_PROFILES_ACTIVE=local ./gradlew bootRun --args='--server.port=8082 --datenportal.catalog.source-type=manifest --datenportal.catalog.http-url=http://localhost:8081/ch.so.daten/current.json --datenportal.catalog.download-url=http://localhost:8081/ch.so.daten --datenportal.catalog.duckdb.source-type=manifest --datenportal.catalog.duckdb.classpath-location='
+SPRING_PROFILES_ACTIVE=local ./gradlew bootRun --args='--server.port=8082 --datenportal.catalog.source-type=manifest --datenportal.catalog.http-url=http://localhost:18081/ch.so.daten/current.json --datenportal.catalog.download-url=http://localhost:18081/ch.so.daten --datenportal.catalog.duckdb.source-type=manifest --datenportal.catalog.duckdb.classpath-location='
 ```
 
 Dann muss der Reload-Token weiterhin extern als `DATENPORTAL_ADMIN_RELOAD_TOKEN`

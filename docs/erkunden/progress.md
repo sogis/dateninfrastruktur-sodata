@@ -1350,7 +1350,7 @@ inklusive vollständiger Legende. Pie/Donut/Histogramm bleiben einspaltig;
 Kontext V4, Backend und Dev-Stack-Verträge bleiben unverändert.
 
 Eingabestand: lokales `main` auf `571fd87` im sodata-Working-Tree
-(Schwesterpfad `../datenportal-sodata` aus dem Dev-Stack).
+(Schwesterpfad `../dateninfrastruktur-sodata` aus dem Dev-Stack).
 Vorhandene uncommittete Änderungen an RDataFramePanel, dessen Test sowie
 R-Labor-Abschnitten in CSS und Dokumentation wurden erhalten. Verwendet
 wurden lokale Testfixtures, keine Änderungen an anderen Repositories.

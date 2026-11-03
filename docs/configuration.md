@@ -74,7 +74,7 @@ Download-URL-Platzhalter:
 
 - XTF-Dateien dürfen in Download-URLs den Platzhalter `${DOWNLOAD_URL}` enthalten, zum Beispiel `${DOWNLOAD_URL}/ch.2581.baumkataster.parquet`.
 - Vor dem XML-Parsing ersetzt die Anwendung den Platzhalter durch `datenportal.catalog.download-url`.
-- Doppelte Slashes an der Join-Stelle werden bereinigt: `download-url: http://localhost:8081/ch.so.datenportal/downloads/` plus `${DOWNLOAD_URL}//file.parquet` wird zu `http://localhost:8081/ch.so.datenportal/downloads/file.parquet`.
+- Doppelte Slashes an der Join-Stelle werden bereinigt: `download-url: http://localhost:18081/ch.so.daten/` plus `${DOWNLOAD_URL}//file.parquet` wird zu `http://localhost:18081/ch.so.daten/file.parquet`.
 - Enthält ein XTF `${DOWNLOAD_URL}` und ist `download-url` leer, schlägt der Katalog-Load kontrolliert fehl.
 - `download-url` darf eine absolute `http(s)`-URL oder ein root-relativer Pfad wie `/downloads` sein.
 
@@ -89,7 +89,7 @@ Mit `DATENPORTAL_CATALOG_SOURCE_TYPE=manifest` und
 `DATENPORTAL_CATALOG_HTTP_URL=https://downloads.example.org/current.json` liest die
 Anwendung je Start/Reload genau einen Veröffentlichungsverweis und danach dessen
 Katalog-XTF. Es wird kein S3-SDK benötigt. Der Manifestvertrag ist im
-[Themenrepo](https://codeberg.org/edigonzales/datenportal-themenrepo/src/branch/main/docs/biblios/lieferverarbeitung.adoc)
+[Themenrepo](https://github.com/sogis/dateninfrastruktur-themenrepo)
 definiert: `schemaVersion: 1`, `releaseId`, `datasheets`, `catalog` und `duckdb`; Dateinamen
 müssen zur Kennung passen und dürfen keine fremden URLs oder Pfadwechsel enthalten.
 
@@ -351,4 +351,4 @@ datenportal:
       include-catalog-download-origin: true
 ```
 
-Bei `include-catalog-download-origin=true` wird die Origin aus `datenportal.catalog.download-url` automatisch ergänzt, sofern `download-url` eine absolute `http(s)`-URL ist. Für den lokalen Standard bedeutet das zusätzlich `http://localhost:8081`.
+Bei `include-catalog-download-origin=true` wird die Origin aus `datenportal.catalog.download-url` automatisch ergänzt, sofern `download-url` eine absolute `http(s)`-URL ist. Für den lokalen Standard bedeutet das zusätzlich `http://localhost:18081`.
