@@ -130,24 +130,24 @@ Alles zurücksetzen, inklusive lokaler Garage-Daten:
 ./scripts/reset.sh --yes
 ```
 
-## Nutzung aus der Datenportal-App
+## Nutzung aus der Sodata-App
 
 Für eine lokal auf dem Host laufende Spring-Boot-App:
 
 ```properties
-datenportal.s3.endpoint-url=http://localhost:3900
-datenportal.s3.region=garage
-datenportal.s3.bucket=ch.so.datenportal
-datenportal.s3.access-key-id=GK0123456789abcdef0123456789abcdef
-datenportal.s3.secret-access-key=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-datenportal.download-base-url=http://localhost:8081/ch.so.datenportal
+dateninfrastruktur.s3.endpoint-url=http://localhost:3900
+dateninfrastruktur.s3.region=garage
+dateninfrastruktur.s3.bucket=ch.so.datenportal
+dateninfrastruktur.s3.access-key-id=GK0123456789abcdef0123456789abcdef
+dateninfrastruktur.s3.secret-access-key=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+dateninfrastruktur.download-base-url=http://localhost:8081/ch.so.datenportal
 ```
 
 Wenn die App selbst im gleichen Compose-Netz läuft:
 
 ```properties
-datenportal.s3.endpoint-url=http://garage:3900
-datenportal.download-base-url=http://downloads:8081/ch.so.datenportal
+dateninfrastruktur.s3.endpoint-url=http://garage:3900
+dateninfrastruktur.download-base-url=http://downloads:8081/ch.so.datenportal
 ```
 
 ## Nutzung aus Jenkins/GRETL lokal
