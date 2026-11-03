@@ -3,7 +3,7 @@ package ch.so.agi.datenportal.explore;
 import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "datenportal.explore")
+@ConfigurationProperties(prefix = "dateninfrastruktur.explore")
 public record ExploreProperties(
         boolean enabled,
         int maxPreviewRows,

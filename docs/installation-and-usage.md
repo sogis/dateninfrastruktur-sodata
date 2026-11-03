@@ -24,25 +24,25 @@ nicht mit Demo-Daten, sondern schlägt wegen der fehlenden Katalogquelle fehl.
 Datei:
 
 ```bash
-./gradlew bootRun --args='--datenportal.catalog.source-type=file --datenportal.catalog.file-location=./tmp/catalog.xtf'
+./gradlew bootRun --args='--dateninfrastruktur.catalog.source-type=file --dateninfrastruktur.catalog.file-location=./tmp/catalog.xtf'
 ```
 
 HTTP:
 
 ```bash
-./gradlew bootRun --args='--datenportal.catalog.source-type=http --datenportal.catalog.http-url=http://localhost:18080/catalog.xtf'
+./gradlew bootRun --args='--dateninfrastruktur.catalog.source-type=http --dateninfrastruktur.catalog.http-url=http://localhost:18080/catalog.xtf'
 ```
 
 ## Runtime Reload
 
 ```bash
-export DATENPORTAL_ADMIN_RELOAD_TOKEN='change-me'
+export DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN='change-me'
 SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
 ```
 
 ```bash
 curl -X POST \
-  -H "X-Reload-Token: ${DATENPORTAL_ADMIN_RELOAD_TOKEN}" \
+  -H "X-Reload-Token: ${DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN}" \
   http://localhost:8080/admin/catalog/reload
 ```
 

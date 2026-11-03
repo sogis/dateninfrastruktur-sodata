@@ -30,7 +30,7 @@ public final class DatenportalInfoContributor implements InfoContributor {
 
     private static Map<String, Object> appDetails() {
         var details = new LinkedHashMap<String, Object>();
-        details.put("name", "datenportal-sodata");
+        details.put("name", "dateninfrastruktur-sodata");
         details.put("packageBase", PACKAGE_BASE);
         details.put("javaVersion", System.getProperty("java.version"));
         return details;

@@ -50,7 +50,7 @@ class CatalogActuatorMvcTest {
     void infoEndpointContainsAppBasics() throws Exception {
         mockMvc.perform(get("/actuator/info"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.app.name").value("datenportal-sodata"))
+                .andExpect(jsonPath("$.app.name").value("dateninfrastruktur-sodata"))
                 .andExpect(jsonPath("$.app.packageBase").value("ch.so.agi.datenportal"))
                 .andExpect(jsonPath("$.app.javaVersion", not(emptyOrNullString())));
     }

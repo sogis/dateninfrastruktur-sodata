@@ -102,7 +102,7 @@ kann später auf derselben Dokumentstruktur aufbauen.
 
 ## Startup
 
-1. Spring bindet `datenportal.catalog.*`.
+1. Spring bindet `dateninfrastruktur.catalog.*`.
 2. `CatalogInputsSource` lädt beide Artefakte; im Manifestmodus stammen sie aus derselben einmaligen Manifestauflösung.
 3. Der DuckDB-Header wird technisch auf mindestens zwölf Bytes und `DUCK` an Byteposition 8 bis 11 geprüft.
 4. `XtfPublishedCatalogParser` parst namespace-aware und XXE-sicher, inklusive exakter `accessRights` sowie strukturbezogener Metadaten (`attributes`, `model`). Für die BAG-Rolle `attributes` liest er alle `DatasetAttribute`-Kinder eines Containers in Dokumentreihenfolge; wiederholte `attributes`-Container bleiben ebenfalls unterstützt.
@@ -115,7 +115,7 @@ Fehlschläge beim initialen Laden sind fail-fast. Die Anwendung startet nicht st
 
 ## Reload
 
-`POST /admin/catalog/reload` ist über `X-Reload-Token` geschützt. Der Token stammt aus `datenportal.admin.reload-token`, typischerweise `DATENPORTAL_ADMIN_RELOAD_TOKEN`.
+`POST /admin/catalog/reload` ist über `X-Reload-Token` geschützt. Der Token stammt aus `dateninfrastruktur.admin.reload-token`, typischerweise `DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN`.
 
 Reload-Ablauf:
 
@@ -352,8 +352,8 @@ Koordinaten, CRS2056, WKB/Snappy. Sie enthält keine Löcher, NULL oder EMPTY;
 diese Fälle werden deshalb zusätzlich synthetisch getestet. Der Playwright-Test
 liest die echte Datei mit dem gebündelten DuckDB und prüft Karte/WMTS/PNG.
 Der echte WebR-Test bleibt wie die bestehende Runtime-Prüfung opt-in:
-`./gradlew playwrightTest --tests '*municipality*' -Ddatenportal.playwright.webr=true`.
-Mit `-Ddatenportal.playwright.liveWmts=true` prüfen die Gemeinde-Kartentests
+`./gradlew playwrightTest --tests '*municipality*' -Ddateninfrastruktur.playwright.webr=true`.
+Mit `-Ddateninfrastruktur.playwright.liveWmts=true` prüfen die Gemeinde-Kartentests
 zusätzlich den echten WMTS einschliesslich CORS und PNG-Export; im normalen
 Check werden Kacheln kontrolliert bereitgestellt, damit externe Ausfälle den
 Build nicht beeinflussen. Der synthetische Fehlertest simuliert einen

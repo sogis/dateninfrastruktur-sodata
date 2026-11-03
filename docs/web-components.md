@@ -60,7 +60,7 @@ im selben Tab. `HeaderViewModelFactory` setzt das gemeinsame `logoHref`, das
 Cache-Control: public, max-age=31536000
 ```
 
-Das ist akzeptabel, weil die Pfade die Web-Component-Version enthalten. Bei einem Versionswechsel wird der Pfad über `datenportal.web-components.version` beziehungsweise `asset-base-path` geändert.
+Das ist akzeptabel, weil die Pfade die Web-Component-Version enthalten. Bei einem Versionswechsel wird der Pfad über `dateninfrastruktur.web-components.version` beziehungsweise `asset-base-path` geändert.
 
 ## Fonts
 

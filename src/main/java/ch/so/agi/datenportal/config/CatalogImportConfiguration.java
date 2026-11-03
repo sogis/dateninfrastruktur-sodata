@@ -43,7 +43,7 @@ public class CatalogImportConfiguration {
             ResourceLoader resourceLoader, Clock clock) {
         if (duckDb.sourceType() == CatalogProperties.SourceType.MANIFEST) {
             if (properties.sourceType() != CatalogProperties.SourceType.MANIFEST) {
-                throw new IllegalArgumentException("DuckDB manifest mode requires datenportal.catalog.source-type=manifest.");
+                throw new IllegalArgumentException("DuckDB manifest mode requires dateninfrastruktur.catalog.source-type=manifest.");
             }
             var source = new ManifestCatalogSource(properties.httpUrl(), properties.httpConnectTimeout(),
                     properties.httpReadTimeout(), properties.maxSize(), clock);

@@ -212,7 +212,7 @@ genannte v5-Gesamtspezifikation fehlt weiterhin im Checkout.
 
 Verifikation:
 
-- `./gradlew clean check -Ddatenportal.playwright.webr=true`: PASS, 2m 9s.
+- `./gradlew clean check -Ddateninfrastruktur.playwright.webr=true`: PASS, 2m 9s.
 - Java: 354 Tests; Playwright: 105 Tests, keine Fehler oder übersprungenen Tests.
 - Nach visueller Nachschärfung: Frontend 25 Dateien / 163 Tests und TypeScript PASS;
   Live-WMTS-Kartentests/PNG erneut in Chromium und Firefox PASS.

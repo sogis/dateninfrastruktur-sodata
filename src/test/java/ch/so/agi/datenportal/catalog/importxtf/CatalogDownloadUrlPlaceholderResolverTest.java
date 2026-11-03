@@ -51,7 +51,7 @@ class CatalogDownloadUrlPlaceholderResolverTest {
 
         assertThatThrownBy(() -> resolver.resolve(original, " "))
                 .isInstanceOf(CatalogSourceException.class)
-                .hasMessageContaining("datenportal.catalog.download-url");
+                .hasMessageContaining("dateninfrastruktur.catalog.download-url");
     }
 
     @Test

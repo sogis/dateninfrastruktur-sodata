@@ -60,7 +60,7 @@ import org.springframework.context.annotation.Primary;
 @Tag("playwright")
 @SpringBootTest(
         classes = {DatenportalApplication.class, ExploreIslandParquetPlaywrightTest.ExploreFixtureCatalogConfiguration.class},
-        properties = "datenportal.catalog.duckdb.classpath-location=explore_fixture_catalog.duckdb",
+        properties = "dateninfrastruktur.catalog.duckdb.classpath-location=explore_fixture_catalog.duckdb",
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ExploreIslandParquetPlaywrightTest {
@@ -99,7 +99,7 @@ class ExploreIslandParquetPlaywrightTest {
             context.onRequest(request -> {
                 if (request.url().startsWith("https://geo.so.ch/")) tileRequests.add(request.url());
             });
-            if (!Boolean.getBoolean("datenportal.playwright.liveWmts")) {
+            if (!Boolean.getBoolean("dateninfrastruktur.playwright.liveWmts")) {
                 context.route("https://geo.so.ch/**", route -> route.fulfill(
                         new com.microsoft.playwright.Route.FulfillOptions().setContentType("image/png")
                                 .setHeaders(Map.of("Access-Control-Allow-Origin", "*")).setBodyBytes(tile.toByteArray())));
@@ -124,7 +124,7 @@ class ExploreIslandParquetPlaywrightTest {
             assertThat(exported.getWidth()).isGreaterThan(500);
             assertThat(exported.getHeight()).isGreaterThan(300);
             assertThat(tileRequests).isNotEmpty().allMatch(url -> url.contains("/default/2056/"));
-            if (!Boolean.getBoolean("datenportal.playwright.liveWmts")) {
+            if (!Boolean.getBoolean("dateninfrastruktur.playwright.liveWmts")) {
                 page.getByLabel("Hintergrundkarte", new Page.GetByLabelOptions().setExact(true)).uncheck();
             }
             Path screenshot = Path.of("build/screenshots/lv95-gemeinden.png");
@@ -138,7 +138,7 @@ class ExploreIslandParquetPlaywrightTest {
 
     @Test
     void municipalityWkbTransfersToSfAndDrawsInRealWebR() {
-        Assumptions.assumeTrue(Boolean.getBoolean("datenportal.playwright.webr"), "Real WebR is opt-in.");
+        Assumptions.assumeTrue(Boolean.getBoolean("dateninfrastruktur.playwright.webr"), "Real WebR is opt-in.");
         try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1280, 1000))) {
             Page page = context.newPage();
             List<String> errors = collectBrowserErrors(page);
@@ -189,7 +189,7 @@ class ExploreIslandParquetPlaywrightTest {
 
     @Test
     void mapMultipleGeometriesRetainNullEmptyAndHolesInRealWebR() {
-        Assumptions.assumeTrue(Boolean.getBoolean("datenportal.playwright.webr"), "Real WebR is opt-in.");
+        Assumptions.assumeTrue(Boolean.getBoolean("dateninfrastruktur.playwright.webr"), "Real WebR is opt-in.");
         try (BrowserContext context = browser.newContext()) {
             context.route("https://geo.so.ch/**", route -> route.abort());
             Page page = context.newPage();
@@ -284,7 +284,7 @@ class ExploreIslandParquetPlaywrightTest {
 
     @Test
     void rLaboratoryLoadsWebRFromSameOriginAndReceivesSqlResult() {
-        Assumptions.assumeTrue(Boolean.getBoolean("datenportal.playwright.webr"),
+        Assumptions.assumeTrue(Boolean.getBoolean("dateninfrastruktur.playwright.webr"),
                 "Real WebR browser runtime test is opt-in because WebR 0.6.0 can hang in Playwright Chromium during Wasm startup.");
         try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1280, 900))) {
             Page page = context.newPage();
@@ -545,8 +545,8 @@ class ExploreIslandParquetPlaywrightTest {
         try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1280, 900))) {
             context.addInitScript("""
                     () => {
-                      localStorage.setItem('react-resizable-panels:datenportal.explore.explore-fixture.sql', JSON.stringify({layout: [1, 99]}));
-                      localStorage.setItem('react-resizable-panels:datenportal.explore.explore-fixture.workbench', JSON.stringify({layout: [1, 99]}));
+                      localStorage.setItem('react-resizable-panels:dateninfrastruktur.explore.explore-fixture.sql', JSON.stringify({layout: [1, 99]}));
+                      localStorage.setItem('react-resizable-panels:dateninfrastruktur.explore.explore-fixture.workbench', JSON.stringify({layout: [1, 99]}));
                     }
                     """);
             Page page = context.newPage();

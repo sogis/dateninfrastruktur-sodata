@@ -76,7 +76,7 @@ Aktueller Stand:
 - WebR `0.6.0` wird ueber `/webr/0.6.0/` ausgeliefert. Der Browser-Loader importiert `webr.js`; `webr.mjs` ist im npm-Dist der Node-ESM-Pfad und darf nicht direkt im Browser importiert werden.
 - Der Paketmirror ist auf den R-4.6-Pfad `bin/emscripten/contrib/4.6` gelockt und liefert `PACKAGES`, `PACKAGES.gz` sowie `PACKAGES.rds` same-origin aus. Der alte 4.5-Pfad passt nicht zu WebR `0.6.0` (`R version 4.6.0`).
 - Das R-Labor nutzt `ChannelType.PostMessage`, `interactive: false`, `captureR()` und `webr::canvas()`. COOP/COEP und SharedArrayBuffer bleiben out of scope.
-- Der echte WebR-Browser-E2E ist opt-in: `./gradlew playwrightTest -Ddatenportal.playwright.webr=true`. Nach CSP- und Paketindex-Fix laeuft der gezielte Smoke in Playwright-Chromium durch; der normale Playwright-Lauf ueberspringt ihn weiterhin aus Laufzeitgruenden und prueft UI-, Transfer- und Same-Origin-Guards ohne echte WebR-Initialisierung.
+- Der echte WebR-Browser-E2E ist opt-in: `./gradlew playwrightTest -Ddateninfrastruktur.playwright.webr=true`. Nach CSP- und Paketindex-Fix laeuft der gezielte Smoke in Playwright-Chromium durch; der normale Playwright-Lauf ueberspringt ihn weiterhin aus Laufzeitgruenden und prueft UI-, Transfer- und Same-Origin-Guards ohne echte WebR-Initialisierung.
 
 ### Versionskonflikt beim WebR-Paketmirror
 
@@ -103,13 +103,13 @@ Verhalten:
 
 ## CORS und Range Requests
 
-DuckDB-Wasm liest Parquet-Dateien im Browser. Echte Download-URLs muessen deshalb browserseitig abrufbar sein. Die CSP-`connect-src`-Direktive erlaubt standardmaessig same-origin, `https://data.so.ch` und automatisch die Origin aus `datenportal.catalog.download-url`:
+DuckDB-Wasm liest Parquet-Dateien im Browser. Echte Download-URLs muessen deshalb browserseitig abrufbar sein. Die CSP-`connect-src`-Direktive erlaubt standardmaessig same-origin, `https://data.so.ch` und automatisch die Origin aus `dateninfrastruktur.catalog.download-url`:
 
 ```text
 connect-src 'self' https://data.so.ch http://localhost:18081
 ```
 
-Die konkrete Download-Basis kann lokal ueber `DOWNLOAD_URL` bzw. `datenportal.catalog.download-url` gesetzt werden. XTF-Dateien koennen dafuer `${DOWNLOAD_URL}/datei.parquet` verwenden; die Anwendung ersetzt den Platzhalter vor dem XML-Parsing und bereinigt doppelte Slashes an der Join-Stelle.
+Die konkrete Download-Basis kann lokal ueber `DOWNLOAD_URL` bzw. `dateninfrastruktur.catalog.download-url` gesetzt werden. XTF-Dateien koennen dafuer `${DOWNLOAD_URL}/datei.parquet` verwenden; die Anwendung ersetzt den Platzhalter vor dem XML-Parsing und bereinigt doppelte Slashes an der Join-Stelle.
 
 Zu pruefen fuer produktive Parquet-Hosts:
 

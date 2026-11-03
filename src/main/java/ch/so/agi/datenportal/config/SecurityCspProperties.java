@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-@ConfigurationProperties(prefix = "datenportal.security.csp")
+@ConfigurationProperties(prefix = "dateninfrastruktur.security.csp")
 public record SecurityCspProperties(
         List<String> connectSrc,
         @DefaultValue("true") boolean includeCatalogDownloadOrigin) {
@@ -30,7 +30,7 @@ public record SecurityCspProperties(
 
     private static String validateDirectiveValue(String value) {
         if (value.contains(";")) {
-            throw new IllegalArgumentException("datenportal.security.csp.connect-src values must not contain ';'");
+            throw new IllegalArgumentException("dateninfrastruktur.security.csp.connect-src values must not contain ';'");
         }
         return value;
     }

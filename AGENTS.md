@@ -14,7 +14,7 @@ Diese Regeln gelten für Implementierung **und** Review. Ein Reviewauftrag erlau
 
 - Nur Änderungen für den eigenständigen lauffähigen Aufbau; kein neuer Login, keine neue Portal-Datenbank, keine Anträge/Freigaben oder ClickHouse-Anwendungsabfragen in dieser Etappe.
 - Bestehendes Dockerfile-Target `jvm-runtime` verwenden. Java-/Node-Anforderungen am übernommenen Build prüfen. Keine Neuimplementierung des Frontends oder zusätzliche Native-Image-Arbeit.
-- `DATENPORTAL_EXPLORE_ENABLED=false` im Stack; das vorhandene SQL-/R-Lab wird hier nicht erweitert.
+- `DATENINFRASTRUKTUR_EXPLORE_ENABLED=false` im Stack; das vorhandene SQL-/R-Lab wird hier nicht erweitert.
 - Interne Package-/Konfigurations-/Artefaktnamen dürfen gemäss Legacy-Liste erhalten bleiben. Dockerfile-COPY-Pfade und Gradle-Artefaktname müssen zusammenpassen.
 - Manifest, Katalogartefakte und Reloadziele auf die lokale eigene Umgebung beziehen; keine bestehenden Dienste neu laden.
 

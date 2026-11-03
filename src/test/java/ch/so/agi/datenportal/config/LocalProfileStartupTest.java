@@ -18,7 +18,7 @@ class LocalProfileStartupTest {
     @Value("${gg.jte.development-mode}")
     private boolean jteDevelopmentMode;
 
-    @Value("${datenportal.catalog.duckdb.classpath-location}")
+    @Value("${dateninfrastruktur.catalog.duckdb.classpath-location}")
     private String duckDbClasspathLocation;
 
     @Test

@@ -33,7 +33,7 @@ Im Dev-Stack läuft das Portal als Compose-Service `sodata` hinter APISIX unter 
   oder verwendet mit `--skip-build` bereits gebaute lokale Images.
 - Compose setzt die Manifestadresse intern (`http://jenkins:18081/ch.so.daten/current.json`), die
   öffentliche Downloadbasis auf dem Host-Port und DuckDB auf `source-type=manifest`.
-- Derselbe `.env`-Wert `DATENPORTAL_PORTAL_RELOAD_TOKEN` versorgt Jenkins und
+- Derselbe `.env`-Wert `DATENINFRASTRUKTUR_PORTAL_RELOAD_TOKEN` versorgt Jenkins und
   den Portal-Container; die frühere Host-Gateway-Adresse entfällt.
 - Der normale Start übernimmt die lokale Erstpublikation und startet Sodata
   danach automatisch mit den gewählten Compose-Overrides. Vor dem Start werden
@@ -67,10 +67,10 @@ werden; bei Reload bleibt der alte Zustand erhalten.
 Alternativ mit JDK 25 im Portal-Repository auf freiem Host-Port 8082 starten:
 
 ```bash
-SPRING_PROFILES_ACTIVE=local ./gradlew bootRun --args='--server.port=8082 --datenportal.catalog.source-type=manifest --datenportal.catalog.http-url=http://localhost:18081/ch.so.daten/current.json --datenportal.catalog.download-url=http://localhost:18081/ch.so.daten --datenportal.catalog.duckdb.source-type=manifest --datenportal.catalog.duckdb.classpath-location='
+SPRING_PROFILES_ACTIVE=local ./gradlew bootRun --args='--server.port=8082 --dateninfrastruktur.catalog.source-type=manifest --dateninfrastruktur.catalog.http-url=http://localhost:18081/ch.so.daten/current.json --dateninfrastruktur.catalog.download-url=http://localhost:18081/ch.so.daten --dateninfrastruktur.catalog.duckdb.source-type=manifest --dateninfrastruktur.catalog.duckdb.classpath-location='
 ```
 
-Dann muss der Reload-Token weiterhin extern als `DATENPORTAL_ADMIN_RELOAD_TOKEN`
+Dann muss der Reload-Token weiterhin extern als `DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN`
 gesetzt und Jenkins auf eine erreichbare Hostadresse konfiguriert werden. Der
 Reload ändert weder Quellkonfiguration noch Startport. Die folgenden
 Standalone-Beispiele verwenden Port 8080. Im Compose-Stack Health und
@@ -103,8 +103,8 @@ Der Standard-`diskSpace`-Health-Contributor ist deaktiviert, damit keine lokalen
 Token setzen:
 
 ```bash
-: "${DATENPORTAL_ADMIN_RELOAD_TOKEN:?Externes Reload-Secret bereitstellen}"
-export DATENPORTAL_ADMIN_RELOAD_TOKEN
+: "${DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN:?Externes Reload-Secret bereitstellen}"
+export DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN
 SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
 ```
 
@@ -112,7 +112,7 @@ Reload:
 
 ```bash
 curl -X POST \
-  -H "X-Reload-Token: ${DATENPORTAL_ADMIN_RELOAD_TOKEN}" \
+  -H "X-Reload-Token: ${DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN}" \
   http://localhost:8080/admin/catalog/reload
 ```
 
@@ -120,7 +120,7 @@ Status:
 
 ```bash
 curl \
-  -H "X-Reload-Token: ${DATENPORTAL_ADMIN_RELOAD_TOKEN}" \
+  -H "X-Reload-Token: ${DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN}" \
   http://localhost:8080/admin/catalog/status
 ```
 
@@ -196,4 +196,4 @@ Manuelle Prüfung mit laufender App:
 - `/actuator/health` liefert `UP`.
 - `/actuator/info` enthält App-Basisinformationen.
 - `curl -I` auf CSS, HTMX und Web-Component-JS zeigt Cache-Header.
-- mit `DATENPORTAL_ADMIN_RELOAD_TOKEN` funktioniert `/admin/catalog/status`; ein Reload kann optional getestet werden.
+- mit `DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN` funktioniert `/admin/catalog/status`; ein Reload kann optional getestet werden.

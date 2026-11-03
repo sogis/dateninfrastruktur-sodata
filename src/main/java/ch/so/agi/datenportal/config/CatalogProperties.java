@@ -7,7 +7,7 @@ import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.unit.DataSize;
 
-@ConfigurationProperties(prefix = "datenportal.catalog")
+@ConfigurationProperties(prefix = "dateninfrastruktur.catalog")
 public record CatalogProperties(
         SourceType sourceType,
         String classpathLocation,
@@ -24,7 +24,7 @@ public record CatalogProperties(
 
     public CatalogProperties {
         if (sourceType == null) {
-            throw new IllegalArgumentException("datenportal.catalog.source-type must be set");
+            throw new IllegalArgumentException("dateninfrastruktur.catalog.source-type must be set");
         }
         classpathLocation = blankToNull(classpathLocation);
         downloadUrl = normalizeDownloadUrl(downloadUrl);
@@ -38,23 +38,23 @@ public record CatalogProperties(
             maxSize = DEFAULT_MAX_SIZE;
         }
         if (httpConnectTimeout.isZero() || httpConnectTimeout.isNegative()) {
-            throw new IllegalArgumentException("datenportal.catalog.http-connect-timeout must be greater than zero");
+            throw new IllegalArgumentException("dateninfrastruktur.catalog.http-connect-timeout must be greater than zero");
         }
         if (httpReadTimeout.isZero() || httpReadTimeout.isNegative()) {
-            throw new IllegalArgumentException("datenportal.catalog.http-read-timeout must be greater than zero");
+            throw new IllegalArgumentException("dateninfrastruktur.catalog.http-read-timeout must be greater than zero");
         }
         if (maxSize.toBytes() <= 0) {
-            throw new IllegalArgumentException("datenportal.catalog.max-size must be greater than zero");
+            throw new IllegalArgumentException("dateninfrastruktur.catalog.max-size must be greater than zero");
         }
         switch (sourceType) {
             case CLASSPATH -> requireClasspathLocation(classpathLocation);
             case FILE -> {
                 if (fileLocation == null) {
                     throw new IllegalArgumentException(
-                            "datenportal.catalog.file-location must be set for file catalog sources");
+                            "dateninfrastruktur.catalog.file-location must be set for file catalog sources");
                 }
             }
-            case HTTP, MANIFEST -> validateHttpUrl(httpUrl, "datenportal.catalog.http-url");
+            case HTTP, MANIFEST -> validateHttpUrl(httpUrl, "dateninfrastruktur.catalog.http-url");
         }
     }
 
@@ -113,10 +113,10 @@ public record CatalogProperties(
         String scheme = uri.getScheme();
         if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) {
             throw new IllegalArgumentException(
-                    "datenportal.catalog.download-url must be an absolute http(s) URL or a root-relative path");
+                    "dateninfrastruktur.catalog.download-url must be an absolute http(s) URL or a root-relative path");
         }
         if (uri.getHost() == null || uri.getHost().isBlank()) {
-            throw new IllegalArgumentException("datenportal.catalog.download-url must contain a host");
+            throw new IllegalArgumentException("dateninfrastruktur.catalog.download-url must contain a host");
         }
         return normalized;
     }
@@ -132,7 +132,7 @@ public record CatalogProperties(
     private static void requireClasspathLocation(String location) {
         if (location == null) {
             throw new IllegalArgumentException(
-                    "datenportal.catalog.classpath-location must be set for classpath catalog sources");
+                    "dateninfrastruktur.catalog.classpath-location must be set for classpath catalog sources");
         }
     }
 

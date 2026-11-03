@@ -31,7 +31,7 @@ Dieses Dokument sammelt die Teststrategie fuer die Erkunden-Phasen und die Phase
   Version 4 mit `rLaboratory`, direkten Chart-/WebR-Booleans und statischen
   Asset-/Cache-Regeln fuer `/webr/**` und `/webr-packages/**`.
 - Im CI kann `playwrightTest` mit
-  `-Pdatenportal.playwright.withDeps=true` gestartet werden. Dann installiert
+  `-Pdateninfrastruktur.playwright.withDeps=true` gestartet werden. Dann installiert
   die Java-Playwright-CLI neben Chromium und Firefox auch die benoetigten
   Linux-Systemabhaengigkeiten. Der GitHub-Workflow verwendet diese Option;
   lokale Aufrufe ohne Property behalten die bisherige Browserinstallation bei.
@@ -42,7 +42,7 @@ Dieses Dokument sammelt die Teststrategie fuer die Erkunden-Phasen und die Phase
 - Seit dem R-Rezept-Ausbau pruefen Vitest- und Java-Tests die wertebasierte Jahrserkennung (`Jahrgang`), Balken-, Streu- und Mehrfachtrend-Rezepte, den Anzahl-Fallback ohne Messwert und dass Zeitspalten nie als Messwert dienen.
 - Seit der R-Plot-Farbangleichung prueft Vitest, dass einfarbige R-Rezepte Dunkelblau `#104E8B` verwenden, Linie und Punkte im Trend dieselbe Farbe haben und der Mehrfachtrend die ersten Farben der `Mehrfarbig`-Palette setzt.
 - Der R-Datenbasis-Panel-Test prueft die einheitliche Titelhierarchie mit `DATENGRUNDLAGE` als einzigem Seitentitel und stellt sicher, dass `DATA FRAME` weiterhin als Faktenlabel statt als grosse Ueberschrift gerendert wird.
-- Der echte WebR-Browser-Smoke ist opt-in: `./gradlew playwrightTest -Ddatenportal.playwright.webr=true`. Der normale `playwrightTest`-Task ueberspringt ihn, weil WebR die Laufzeit deutlich verlaengert. Bei Aenderungen an CSP, WebR-Runtime, Paketmirror oder R-Transfer muss der gezielte Test `ExploreIslandParquetPlaywrightTest.rLaboratoryLoadsWebRFromSameOriginAndReceivesSqlResult` zusaetzlich ausgefuehrt werden.
+- Der echte WebR-Browser-Smoke ist opt-in: `./gradlew playwrightTest -Ddateninfrastruktur.playwright.webr=true`. Der normale `playwrightTest`-Task ueberspringt ihn, weil WebR die Laufzeit deutlich verlaengert. Bei Aenderungen an CSP, WebR-Runtime, Paketmirror oder R-Transfer muss der gezielte Test `ExploreIslandParquetPlaywrightTest.rLaboratoryLoadsWebRFromSameOriginAndReceivesSqlResult` zusaetzlich ausgefuehrt werden.
 
 ## Code-Quality Remediation Phase 1 am 2026-08-11
 
@@ -75,7 +75,7 @@ Testprotokoll:
 | `npm --prefix src/main/frontend/explore run build` | PASS; existing large DuckDB-Wasm chunk warning remains |
 | `git diff --check` | PASS |
 | `./gradlew clean check` | PASS twice, first `1m 7s`, second `57s` |
-| `./gradlew playwrightTest --tests 'ch.so.agi.datenportal.explore.ExploreIslandParquetPlaywrightTest.rLaboratoryLoadsWebRFromSameOriginAndReceivesSqlResult' -Ddatenportal.playwright.webr=true` | PASS, real WebR browser smoke, `9s` |
+| `./gradlew playwrightTest --tests 'ch.so.agi.datenportal.explore.ExploreIslandParquetPlaywrightTest.rLaboratoryLoadsWebRFromSameOriginAndReceivesSqlResult' -Ddateninfrastruktur.playwright.webr=true` | PASS, real WebR browser smoke, `9s` |
 
 Die Remediation-Phasen werden separat committed; die Commit-Zuordnung steht in
 `docs/phase-status.md`.
@@ -186,7 +186,7 @@ Testprotokoll:
 |---|---|
 | `npm test` | PASS, 23 Dateien, 125 Tests |
 | `npm run typecheck` | PASS |
-| `./gradlew playwrightTest --tests 'ch.so.agi.datenportal.explore.ExploreIslandParquetPlaywrightTest.rLaboratoryLoadsWebRFromSameOriginAndReceivesSqlResult' -Ddatenportal.playwright.webr=true` | PASS, real WebR browser smoke, `BUILD SUCCESSFUL in 14s` |
+| `./gradlew playwrightTest --tests 'ch.so.agi.datenportal.explore.ExploreIslandParquetPlaywrightTest.rLaboratoryLoadsWebRFromSameOriginAndReceivesSqlResult' -Ddateninfrastruktur.playwright.webr=true` | PASS, real WebR browser smoke, `BUILD SUCCESSFUL in 14s` |
 | `./gradlew clean bootJar --no-daemon` | PASS |
 | `git diff --check` | PASS |
 | `./gradlew clean check --no-daemon` | PASS, `BUILD SUCCESSFUL in 57s`; Vitest 125, TypeScript, Vite, Backend-Tests und Playwright |

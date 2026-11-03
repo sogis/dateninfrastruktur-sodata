@@ -1,6 +1,6 @@
 spring:
   application:
-    name: datenportal-sodata
+    name: dateninfrastruktur-sodata
   web:
     error:
       include-message: never
@@ -40,14 +40,14 @@ management:
     diskspace:
       enabled: false
 
-datenportal:
+dateninfrastruktur:
   catalog:
     http-connect-timeout: 5s
     http-read-timeout: 30s
     max-size: 50MB
     download-url: ${DOWNLOAD_URL:}
   admin:
-    reload-token: ${DATENPORTAL_ADMIN_RELOAD_TOKEN:}
+    reload-token: ${DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN:}
   security:
     csp:
       connect-src:

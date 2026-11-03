@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public final class FooterViewModelFactory {
 
-    static final String DEFAULT_ARTIFACT = "datenportal-sodata";
+    static final String DEFAULT_ARTIFACT = "dateninfrastruktur-sodata";
     static final String UNKNOWN_VALUE = "unknown";
     private static final String PROVIDER_NOTICE =
             "Die Daten werden von den zuständigen Stellen des Kantons Solothurn bereitgestellt.";

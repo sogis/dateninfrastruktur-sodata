@@ -13,19 +13,19 @@ class FooterViewModelFactoryTest {
     @Test
     void formatsArtifactVersionAndCommitFromBuildProperties() {
         FooterViewModelFactory factory = new FooterViewModelFactory(providerFor(buildProperties(
-                "datenportal-sodata", "0.1.0-SNAPSHOT", "27cd81fb0d0e")));
+                "dateninfrastruktur-sodata", "0.1.0-SNAPSHOT", "27cd81fb0d0e")));
 
         assertThat(factory.create().buildLabel())
-                .isEqualTo("datenportal-sodata-0.1.0-SNAPSHOT-27cd81fb0d0e");
+                .isEqualTo("dateninfrastruktur-sodata-0.1.0-SNAPSHOT-27cd81fb0d0e");
     }
 
     @Test
     void fallsBackToUnknownWhenCommitIsMissing() {
         FooterViewModelFactory factory = new FooterViewModelFactory(providerFor(buildProperties(
-                "datenportal-sodata", "0.1.0-SNAPSHOT", null)));
+                "dateninfrastruktur-sodata", "0.1.0-SNAPSHOT", null)));
 
         assertThat(factory.create().buildLabel())
-                .isEqualTo("datenportal-sodata-0.1.0-SNAPSHOT-unknown");
+                .isEqualTo("dateninfrastruktur-sodata-0.1.0-SNAPSHOT-unknown");
     }
 
     private static BuildProperties buildProperties(String artifact, String version, String commit) {

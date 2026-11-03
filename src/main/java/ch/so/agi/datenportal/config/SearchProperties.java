@@ -3,7 +3,7 @@ package ch.so.agi.datenportal.config;
 import ch.so.agi.datenportal.search.PageRequest;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "datenportal.search")
+@ConfigurationProperties(prefix = "dateninfrastruktur.search")
 public record SearchProperties(
         int defaultPageSize,
         int maxPageSize) {

@@ -43,7 +43,7 @@ jobs:
           cache-dependency-path: src/main/frontend/explore/package-lock.json
 
       - name: Run application and frontend checks
-        run: ./gradlew clean check -Pdatenportal.playwright.withDeps=true
+        run: ./gradlew clean check -Pdateninfrastruktur.playwright.withDeps=true
 
   build-and-smoke-test:
     needs: application-checks

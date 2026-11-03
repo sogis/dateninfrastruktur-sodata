@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-BUCKET="${DATENPORTAL_BUCKET:-ch.so.datenportal}"
+BUCKET="${DATENINFRASTRUKTUR_BUCKET:-ch.so.datenportal}"
 AWS_ENDPOINT_URL="${AWS_ENDPOINT_URL:-http://garage:3900}"
 AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:-garage}"
 SEED_DIR="/seed/object-storage/${BUCKET}"
@@ -56,8 +56,8 @@ aws_call s3 sync "$SEED_DIR" "s3://${BUCKET}/" --delete
 echo
 echo "Seed completed. Useful endpoints:"
 echo "  S3 API endpoint inside Docker: ${AWS_ENDPOINT_URL}"
-echo "  Public download proxy on host: http://localhost:${DATENPORTAL_DOWNLOAD_PORT:-8081}/${BUCKET}/"
-echo "  Example index: http://localhost:${DATENPORTAL_DOWNLOAD_PORT:-8081}/${BUCKET}/index.html"
+echo "  Public download proxy on host: http://localhost:${DATENINFRASTRUKTUR_DOWNLOAD_PORT:-8081}/${BUCKET}/"
+echo "  Example index: http://localhost:${DATENINFRASTRUKTUR_DOWNLOAD_PORT:-8081}/${BUCKET}/index.html"
 echo
 echo "A few uploaded objects:"
 LISTING=$(aws_call s3 ls "s3://${BUCKET}/" --recursive 2>/dev/null || true)

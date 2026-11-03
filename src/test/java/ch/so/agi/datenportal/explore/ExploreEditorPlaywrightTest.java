@@ -21,7 +21,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 @Tag("playwright")
 @SpringBootTest(
         classes = {DatenportalApplication.class, ExploreIslandParquetPlaywrightTest.ExploreFixtureCatalogConfiguration.class},
-        properties = "datenportal.catalog.duckdb.classpath-location=explore_fixture_catalog.duckdb",
+        properties = "dateninfrastruktur.catalog.duckdb.classpath-location=explore_fixture_catalog.duckdb",
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ExploreEditorPlaywrightTest {
 

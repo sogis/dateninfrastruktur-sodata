@@ -172,11 +172,11 @@ def main():
         expected = ['/opt/datenportal/app'] if args.runtime == 'native' else ['java', '-jar', '/opt/datenportal/app.jar']
         require(image['Config']['Entrypoint'] == expected, f'Image does not use the expected {args.runtime} entrypoint: {expected}')
         docker('create', '--name', name, '--user', '1001230000:0', '--publish', '127.0.0.1::8080',
-               '--env', 'DATENPORTAL_CATALOG_SOURCE_TYPE=classpath',
-               '--env', 'DATENPORTAL_CATALOG_CLASSPATH_LOCATION=published_catalog_full_62_entries.xtf',
-               '--env', 'DATENPORTAL_CATALOG_DOWNLOAD_URL=http://localhost:8081/ch.so.datenportal/downloads',
-               '--env', 'DATENPORTAL_CATALOG_DUCKDB_SOURCE_TYPE=classpath',
-               '--env', 'DATENPORTAL_CATALOG_DUCKDB_CLASSPATH_LOCATION=catalog.duckdb', args.image)
+               '--env', 'DATENINFRASTRUKTUR_CATALOG_SOURCE_TYPE=classpath',
+               '--env', 'DATENINFRASTRUKTUR_CATALOG_CLASSPATH_LOCATION=published_catalog_full_62_entries.xtf',
+               '--env', 'DATENINFRASTRUKTUR_CATALOG_DOWNLOAD_URL=http://localhost:8081/ch.so.datenportal/downloads',
+               '--env', 'DATENINFRASTRUKTUR_CATALOG_DUCKDB_SOURCE_TYPE=classpath',
+               '--env', 'DATENINFRASTRUKTUR_CATALOG_DUCKDB_CLASSPATH_LOCATION=catalog.duckdb', args.image)
         created = True
         docker('start', name)
         port = json.loads(docker('inspect', name))[0]['NetworkSettings']['Ports']['8080/tcp'][0]['HostPort']

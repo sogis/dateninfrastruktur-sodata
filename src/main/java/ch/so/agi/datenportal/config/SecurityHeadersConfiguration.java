@@ -129,7 +129,7 @@ public class SecurityHeadersConfiguration {
                     null,
                     null).toString());
         } catch (URISyntaxException ex) {
-            throw new IllegalArgumentException("Invalid datenportal.catalog.download-url origin", ex);
+            throw new IllegalArgumentException("Invalid dateninfrastruktur.catalog.download-url origin", ex);
         }
     }
 }

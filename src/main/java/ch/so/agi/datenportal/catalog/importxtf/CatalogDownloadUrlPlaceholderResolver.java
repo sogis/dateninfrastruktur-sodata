@@ -22,7 +22,7 @@ public final class CatalogDownloadUrlPlaceholderResolver {
         String normalizedDownloadUrl = normalizeDownloadUrl(downloadUrl);
         if (normalizedDownloadUrl == null) {
             throw new CatalogSourceException(
-                    "Catalog source contains ${DOWNLOAD_URL}, but datenportal.catalog.download-url is not configured");
+                    "Catalog source contains ${DOWNLOAD_URL}, but dateninfrastruktur.catalog.download-url is not configured");
         }
 
         var matcher = DOWNLOAD_URL_TOKEN_WITH_SLASHES.matcher(content);

@@ -1,6 +1,6 @@
 # dateninfrastruktur-sodata
 
-Eigenständige Übernahme der Datenportal-Webanwendung für die lokale Dateninfrastruktur-Grundinstallation. Der technische Gradle-Artefaktname `datenportal-sodata` und die Dockerfile-COPY-Pfade bleiben als Kompatibilitätsvertrag erhalten. Explore ist im neuen Stack über `DATENPORTAL_EXPLORE_ENABLED=false` deaktiviert.
+Eigenständige Übernahme der Datenportal-Webanwendung für die lokale Dateninfrastruktur-Grundinstallation. Der Gradle-Artefakt- und App-Name ist `dateninfrastruktur-sodata`; Dockerfile-COPY-Pfade und Laufzeitname wurden entsprechend angepasst. Explore ist im neuen Stack über `DATENINFRASTRUKTUR_EXPLORE_ENABLED=false` deaktiviert.
 
 Serverseitig gerenderte Datenportal-Webanwendung für den Kanton Solothurn.
 
@@ -92,10 +92,10 @@ Container-Schnellstart mit den gebündelten Fixtures:
 ```bash
 docker build -t dateninfrastruktur-sodata:local .
 docker run --rm -p 18082:8080 \
-  -e DATENPORTAL_CATALOG_SOURCE_TYPE=classpath \
-  -e DATENPORTAL_CATALOG_CLASSPATH_LOCATION=published_catalog_full_62_entries.xtf \
-  -e DATENPORTAL_CATALOG_DUCKDB_SOURCE_TYPE=classpath \
-  -e DATENPORTAL_CATALOG_DUCKDB_CLASSPATH_LOCATION=catalog.duckdb \
+  -e DATENINFRASTRUKTUR_CATALOG_SOURCE_TYPE=classpath \
+  -e DATENINFRASTRUKTUR_CATALOG_CLASSPATH_LOCATION=published_catalog_full_62_entries.xtf \
+  -e DATENINFRASTRUKTUR_CATALOG_DUCKDB_SOURCE_TYPE=classpath \
+  -e DATENINFRASTRUKTUR_CATALOG_DUCKDB_CLASSPATH_LOCATION=catalog.duckdb \
   dateninfrastruktur-sodata:local
 ```
 
@@ -138,7 +138,7 @@ datenportal:
       classpath-location: catalog.duckdb
       schema: opendata
   admin:
-    reload-token: ${DATENPORTAL_ADMIN_RELOAD_TOKEN:}
+    reload-token: ${DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN:}
   search:
     default-page-size: 10
     max-page-size: 100
@@ -174,8 +174,8 @@ zurückgehaltener Katalog führt zu einer leeren öffentlichen Sicht.
 Die vollständige Quelldatei bleibt unverändert und kann über den Katalog-Download
 weiterhin auch zurückgehaltene Einträge offenlegen.
 
-Die Quelle `datenportal.catalog.source-type=manifest` löst eine unter
-`datenportal.catalog.http-url` konfigurierte `current.json` auf. Details zu
+Die Quelle `dateninfrastruktur.catalog.source-type=manifest` löst eine unter
+`dateninfrastruktur.catalog.http-url` konfigurierte `current.json` auf. Details zu
 Erstinitialisierung ohne Katalog und zum gemeinsamen DuckDB-Manifestmodus stehen
 in [Konfiguration](docs/configuration.md#veröffentlichungsverweis-auf-s3).
 
@@ -212,14 +212,14 @@ sequenceDiagram
 ## Reload
 
 ```bash
-: "${DATENPORTAL_ADMIN_RELOAD_TOKEN:?Externes Reload-Secret bereitstellen}"
-export DATENPORTAL_ADMIN_RELOAD_TOKEN
+: "${DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN:?Externes Reload-Secret bereitstellen}"
+export DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN
 SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
 ```
 
 ```bash
 curl -X POST \
-  -H "X-Reload-Token: ${DATENPORTAL_ADMIN_RELOAD_TOKEN}" \
+  -H "X-Reload-Token: ${DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN}" \
   http://localhost:8080/admin/catalog/reload
 ```
 
@@ -227,7 +227,7 @@ Status:
 
 ```bash
 curl \
-  -H "X-Reload-Token: ${DATENPORTAL_ADMIN_RELOAD_TOKEN}" \
+  -H "X-Reload-Token: ${DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN}" \
   http://localhost:8080/admin/catalog/status
 ```
 

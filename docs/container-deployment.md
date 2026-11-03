@@ -262,11 +262,11 @@ explizit per Umgebungsvariablen gewählt:
 
 ```bash
 docker run --rm -p 18082:8080 \
-  -e DATENPORTAL_CATALOG_SOURCE_TYPE=classpath \
-  -e DATENPORTAL_CATALOG_CLASSPATH_LOCATION=published_catalog_full_62_entries.xtf \
-  -e DATENPORTAL_CATALOG_DOWNLOAD_URL=http://localhost:18081/ch.so.daten \
-  -e DATENPORTAL_CATALOG_DUCKDB_SOURCE_TYPE=classpath \
-  -e DATENPORTAL_CATALOG_DUCKDB_CLASSPATH_LOCATION=catalog.duckdb \
+  -e DATENINFRASTRUKTUR_CATALOG_SOURCE_TYPE=classpath \
+  -e DATENINFRASTRUKTUR_CATALOG_CLASSPATH_LOCATION=published_catalog_full_62_entries.xtf \
+  -e DATENINFRASTRUKTUR_CATALOG_DOWNLOAD_URL=http://localhost:18081/ch.so.daten \
+  -e DATENINFRASTRUKTUR_CATALOG_DUCKDB_SOURCE_TYPE=classpath \
+  -e DATENINFRASTRUKTUR_CATALOG_DUCKDB_CLASSPATH_LOCATION=catalog.duckdb \
   dateninfrastruktur-sodata:local
 ```
 
@@ -292,23 +292,23 @@ werden sie als Umgebungsvariablen übergeben (Spring-Boot-Relaxed-Binding):
 | Variable | Bedeutung |
 |---|---|
 | `SPRING_PROFILES_ACTIVE` | nur für Host-`bootRun`; im Container nicht verwenden (JTE-Development-Mode erwartet Template-Quellen aus dem Checkout) |
-| `DATENPORTAL_ADMIN_RELOAD_TOKEN` | Token für `/admin/catalog/reload` und `/admin/catalog/status`; ohne Wert antworten die Endpunkte `503` |
-| `DATENPORTAL_CATALOG_SOURCE_TYPE` | `manifest` im Stackbetrieb; alternativ `classpath`, `http`, `file` |
-| `DATENPORTAL_CATALOG_HTTP_URL` | Manifestadresse, im Compose-Netz z. B. `http://jenkins:18081/ch.so.daten/current.json` |
-| `DATENPORTAL_CATALOG_DOWNLOAD_URL` | öffentlich erreichbare Downloadbasis für den Browser, z. B. `http://localhost:18081/ch.so.daten` |
-| `DATENPORTAL_CATALOG_DUCKDB_SOURCE_TYPE` | `manifest` (gemeinsam mit XTF), `classpath` (Fixtures), `file` oder `http` |
-| `DATENPORTAL_CATALOG_DUCKDB_CLASSPATH_LOCATION` | `catalog.duckdb` für die gebündelte Fixture |
+| `DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN` | Token für `/admin/catalog/reload` und `/admin/catalog/status`; ohne Wert antworten die Endpunkte `503` |
+| `DATENINFRASTRUKTUR_CATALOG_SOURCE_TYPE` | `manifest` im Stackbetrieb; alternativ `classpath`, `http`, `file` |
+| `DATENINFRASTRUKTUR_CATALOG_HTTP_URL` | Manifestadresse, im Compose-Netz z. B. `http://jenkins:18081/ch.so.daten/current.json` |
+| `DATENINFRASTRUKTUR_CATALOG_DOWNLOAD_URL` | öffentlich erreichbare Downloadbasis für den Browser, z. B. `http://localhost:18081/ch.so.daten` |
+| `DATENINFRASTRUKTUR_CATALOG_DUCKDB_SOURCE_TYPE` | `manifest` (gemeinsam mit XTF), `classpath` (Fixtures), `file` oder `http` |
+| `DATENINFRASTRUKTUR_CATALOG_DUCKDB_CLASSPATH_LOCATION` | `catalog.duckdb` für die gebündelte Fixture |
 | `SERVER_PORT` | optional; Default im Container ist `8080` |
 
 Beispiel mit Manifestquelle:
 
 ```bash
 docker run --rm -p 18082:8080 \
-  -e DATENPORTAL_ADMIN_RELOAD_TOKEN=change-me \
-  -e DATENPORTAL_CATALOG_SOURCE_TYPE=manifest \
-  -e DATENPORTAL_CATALOG_HTTP_URL=http://host.docker.internal:18081/ch.so.daten/current.json \
-  -e DATENPORTAL_CATALOG_DOWNLOAD_URL=http://localhost:18081/ch.so.daten \
-  -e DATENPORTAL_CATALOG_DUCKDB_SOURCE_TYPE=manifest \
+  -e DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN=change-me \
+  -e DATENINFRASTRUKTUR_CATALOG_SOURCE_TYPE=manifest \
+  -e DATENINFRASTRUKTUR_CATALOG_HTTP_URL=http://host.docker.internal:18081/ch.so.daten/current.json \
+  -e DATENINFRASTRUKTUR_CATALOG_DOWNLOAD_URL=http://localhost:18081/ch.so.daten \
+  -e DATENINFRASTRUKTUR_CATALOG_DUCKDB_SOURCE_TYPE=manifest \
   dateninfrastruktur-sodata:local
 ```
 
@@ -405,8 +405,8 @@ Der Abgleich mit `datenportal-stack/deploy/base/sodata.yaml`, der internen
 Jenkins-Reload-Konfiguration und dem APISIX-Gateway bestätigt folgende
 Betriebsverträge:
 
-- Container-Port `8080` und die bestehenden `DATENPORTAL_CATALOG_*`-
-  beziehungsweise `DATENPORTAL_ADMIN_RELOAD_TOKEN`-Umgebungsvariablen.
+- Container-Port `8080` und die bestehenden `DATENINFRASTRUKTUR_CATALOG_*`-
+  beziehungsweise `DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN`-Umgebungsvariablen.
 - Manifest `schemaVersion: 1` mit `releaseId`, `datasheets`, `catalog` und
   `duckdb`; XTF und DuckDB werden aus derselben Veröffentlichung geladen.
   `catalog: null` bleibt mit gültiger DuckDB eine zulässige leere Erstlieferung.
@@ -431,6 +431,6 @@ CPU-Fehler, erfolgreiche Probes und Katalog-/Explore-Seiten zu prüfen.
 | Container startet wiederholt neu | Manifestadresse und `current.json` prüfen; Logs mit `docker compose logs sodata` bzw. `docker logs <container>` |
 | Healthcheck bleibt `unhealthy`, Anwendung läuft | Startzeit verkürzen/`start-period` prüfen; `/actuator/health/liveness` direkt mit `curl` testen |
 | Port belegt | Im Stack `GATEWAY_PORT` (Default 18081) prüfen; bei Standalone-Containern das gewählte `-p`-Mapping |
-| Reload `503` | `DATENPORTAL_ADMIN_RELOAD_TOKEN` im Container leer |
-| Reload `401` | Token stimmt nicht mit Jenkins `DATENPORTAL_PORTAL_RELOAD_TOKEN` überein |
+| Reload `503` | `DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN` im Container leer |
+| Reload `401` | Token stimmt nicht mit Jenkins `DATENINFRASTRUKTUR_PORTAL_RELOAD_TOKEN` überein |
 | Erkunden zeigt falsche/fehlende Tabellen | Manifestgeneration, Reload und View-Erzeugung im GRETL-Job prüfen; offene Playgrounds neu laden |

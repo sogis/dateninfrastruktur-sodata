@@ -159,7 +159,7 @@ export AWS_ENDPOINT_URL=http://localhost:3900
 export AWS_DEFAULT_REGION=garage
 export AWS_ACCESS_KEY_ID=GK0123456789abcdef0123456789abcdef
 export AWS_SECRET_ACCESS_KEY=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-export DATENPORTAL_BUCKET=ch.so.datenportal
+export DATENINFRASTRUKTUR_BUCKET=ch.so.datenportal
 ```
 
 Wenn Jenkins als Container im gleichen Docker-Netz läuft:
@@ -169,14 +169,14 @@ export AWS_ENDPOINT_URL=http://garage:3900
 export AWS_DEFAULT_REGION=garage
 export AWS_ACCESS_KEY_ID=GK0123456789abcdef0123456789abcdef
 export AWS_SECRET_ACCESS_KEY=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-export DATENPORTAL_BUCKET=ch.so.datenportal
+export DATENINFRASTRUKTUR_BUCKET=ch.so.datenportal
 ```
 
 Beispiel mit AWS CLI:
 
 ```bash
-aws --endpoint-url "$AWS_ENDPOINT_URL" s3 sync build/data/ "s3://$DATENPORTAL_BUCKET/downloads/" --delete
-aws --endpoint-url "$AWS_ENDPOINT_URL" s3 cp metadata.json "s3://$DATENPORTAL_BUCKET/metadata/metadata.json" \
+aws --endpoint-url "$AWS_ENDPOINT_URL" s3 sync build/data/ "s3://$DATENINFRASTRUKTUR_BUCKET/downloads/" --delete
+aws --endpoint-url "$AWS_ENDPOINT_URL" s3 cp metadata.json "s3://$DATENINFRASTRUKTUR_BUCKET/metadata/metadata.json" \
   --metadata "dataset_id=ch.so.demo,uploaded_by=gretl,environment=dev"
 ```
 

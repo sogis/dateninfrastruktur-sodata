@@ -205,7 +205,7 @@ tasks.named('processResources') {
 }
 
 def playwrightBrowsersPath = layout.projectDirectory.dir('.gradle/playwright-browsers').asFile.absolutePath
-def playwrightInstallWithDeps = providers.gradleProperty('datenportal.playwright.withDeps')
+def playwrightInstallWithDeps = providers.gradleProperty('dateninfrastruktur.playwright.withDeps')
         .getOrElse('false')
         .toBoolean()
 
@@ -246,9 +246,9 @@ tasks.register('playwrightTest', Test) {
     dependsOn tasks.named('installPlaywrightChromium')
     dependsOn tasks.named('installPlaywrightFirefox')
     environment 'PLAYWRIGHT_BROWSERS_PATH', playwrightBrowsersPath
-    systemProperty 'datenportal.playwright.liveWmts', System.getProperty('datenportal.playwright.liveWmts', 'false')
-    if (System.getProperty('datenportal.playwright.webr') != null) {
-        systemProperty 'datenportal.playwright.webr', System.getProperty('datenportal.playwright.webr')
+    systemProperty 'dateninfrastruktur.playwright.liveWmts', System.getProperty('dateninfrastruktur.playwright.liveWmts', 'false')
+    if (System.getProperty('dateninfrastruktur.playwright.webr') != null) {
+        systemProperty 'dateninfrastruktur.playwright.webr', System.getProperty('dateninfrastruktur.playwright.webr')
     }
     testLogging {
         events 'failed'

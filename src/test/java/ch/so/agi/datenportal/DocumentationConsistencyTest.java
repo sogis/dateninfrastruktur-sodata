@@ -14,7 +14,7 @@ class DocumentationConsistencyTest {
         String configuration = Files.readString(Path.of("docs/configuration.md"));
 
         assertThat(configuration)
-                .contains("DATENPORTAL_ADMIN_RELOAD_TOKEN")
+                .contains("DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN")
                 .contains("X-Reload-Token")
                 .contains("/actuator/health")
                 .contains("/actuator/health/liveness")

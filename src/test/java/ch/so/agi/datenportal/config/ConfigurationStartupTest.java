@@ -18,7 +18,7 @@ class ConfigurationStartupTest {
                 .run(context -> {
                     assertThat(context).hasFailed();
                     assertThat(context.getStartupFailure())
-                            .hasRootCauseMessage("datenportal.catalog.source-type must be set");
+                            .hasRootCauseMessage("dateninfrastruktur.catalog.source-type must be set");
                 });
     }
 
@@ -26,11 +26,11 @@ class ConfigurationStartupTest {
     void missingCatalogLocationPreventsStartup() {
         catalogRunner()
                 .withUserConfiguration(CatalogPropertiesConfiguration.class)
-                .withPropertyValues("datenportal.catalog.source-type=classpath")
+                .withPropertyValues("dateninfrastruktur.catalog.source-type=classpath")
                 .run(context -> {
                     assertThat(context).hasFailed();
                     assertThat(context.getStartupFailure())
-                            .hasRootCauseMessage("datenportal.catalog.classpath-location must be set for classpath catalog sources");
+                            .hasRootCauseMessage("dateninfrastruktur.catalog.classpath-location must be set for classpath catalog sources");
                 });
     }
 
@@ -39,12 +39,12 @@ class ConfigurationStartupTest {
         catalogRunner()
                 .withUserConfiguration(CatalogPropertiesConfiguration.class)
                 .withPropertyValues(
-                        "datenportal.catalog.source-type=http",
-                        "datenportal.catalog.http-url=ftp://example.com/catalog.xtf")
+                        "dateninfrastruktur.catalog.source-type=http",
+                        "dateninfrastruktur.catalog.http-url=ftp://example.com/catalog.xtf")
                 .run(context -> {
                     assertThat(context).hasFailed();
                     assertThat(context.getStartupFailure())
-                            .hasRootCauseMessage("datenportal.catalog.http-url must use http or https");
+                            .hasRootCauseMessage("dateninfrastruktur.catalog.http-url must use http or https");
                 });
     }
 
@@ -55,7 +55,7 @@ class ConfigurationStartupTest {
                 .run(context -> {
                     assertThat(context).hasFailed();
                     assertThat(context.getStartupFailure())
-                            .hasRootCauseMessage("datenportal.catalog.duckdb.source-type must be set");
+                            .hasRootCauseMessage("dateninfrastruktur.catalog.duckdb.source-type must be set");
                 });
     }
 
@@ -63,11 +63,11 @@ class ConfigurationStartupTest {
     void missingDuckDbLocationPreventsStartup() {
         duckDbRunner()
                 .withUserConfiguration(CatalogDuckDbPropertiesConfiguration.class)
-                .withPropertyValues("datenportal.catalog.duckdb.source-type=classpath")
+                .withPropertyValues("dateninfrastruktur.catalog.duckdb.source-type=classpath")
                 .run(context -> {
                     assertThat(context).hasFailed();
                     assertThat(context.getStartupFailure())
-                            .hasRootCauseMessage("datenportal.catalog.duckdb.classpath-location must be set for classpath sources");
+                            .hasRootCauseMessage("dateninfrastruktur.catalog.duckdb.classpath-location must be set for classpath sources");
                 });
     }
 

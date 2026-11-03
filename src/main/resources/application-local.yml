@@ -8,7 +8,7 @@ gg:
     development-mode: true
     use-precompiled-templates: false
 
-datenportal:
+dateninfrastruktur:
   catalog:
     source-type: classpath
     classpath-location: published_catalog_full_62_entries.xtf

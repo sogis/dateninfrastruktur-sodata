@@ -4,7 +4,7 @@ import java.util.Objects;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-@ConfigurationProperties(prefix = "datenportal.web-components")
+@ConfigurationProperties(prefix = "dateninfrastruktur.web-components")
 public record WebComponentsProperties(
         @DefaultValue("true") boolean enabled,
         @DefaultValue("0.1.10") String version,
@@ -36,10 +36,10 @@ public record WebComponentsProperties(
     }
 
     private static String normalizeVersion(String value) {
-        String normalized = Objects.requireNonNull(value, "datenportal.web-components.version must not be null")
+        String normalized = Objects.requireNonNull(value, "dateninfrastruktur.web-components.version must not be null")
                 .trim();
         if (normalized.isEmpty()) {
-            throw new IllegalArgumentException("datenportal.web-components.version must not be blank");
+            throw new IllegalArgumentException("dateninfrastruktur.web-components.version must not be blank");
         }
         return normalized;
     }
@@ -52,11 +52,11 @@ public record WebComponentsProperties(
             normalized = normalized.substring(0, normalized.length() - 1);
         }
         if (normalized.isBlank()) {
-            throw new IllegalArgumentException("datenportal.web-components.asset-base-path must not be blank");
+            throw new IllegalArgumentException("dateninfrastruktur.web-components.asset-base-path must not be blank");
         }
         if (!useCdn && !normalized.startsWith("/")) {
             throw new IllegalArgumentException(
-                    "datenportal.web-components.asset-base-path must start with '/' when use-cdn is false");
+                    "dateninfrastruktur.web-components.asset-base-path must start with '/' when use-cdn is false");
         }
         return normalized;
     }

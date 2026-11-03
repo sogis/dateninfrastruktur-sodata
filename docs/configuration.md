@@ -31,7 +31,7 @@ Wichtige Umgebungsvariablen:
 
 - `SPRING_PROFILES_ACTIVE`: typischerweise `local` lokal; in Produktion ein
   eigenes externes Profil oder externe Properties.
-- `DATENPORTAL_ADMIN_RELOAD_TOKEN`: Token für geschützten Reload und Status.
+- `DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN`: Token für geschützten Reload und Status.
 - `DOWNLOAD_URL`: optionale Basis für `${DOWNLOAD_URL}` in XTF-Dateien; ohne
   Wert bleibt `download-url` ungesetzt.
 
@@ -73,7 +73,7 @@ HTTP-Quellen:
 Download-URL-Platzhalter:
 
 - XTF-Dateien dürfen in Download-URLs den Platzhalter `${DOWNLOAD_URL}` enthalten, zum Beispiel `${DOWNLOAD_URL}/ch.2581.baumkataster.parquet`.
-- Vor dem XML-Parsing ersetzt die Anwendung den Platzhalter durch `datenportal.catalog.download-url`.
+- Vor dem XML-Parsing ersetzt die Anwendung den Platzhalter durch `dateninfrastruktur.catalog.download-url`.
 - Doppelte Slashes an der Join-Stelle werden bereinigt: `download-url: http://localhost:18081/ch.so.daten/` plus `${DOWNLOAD_URL}//file.parquet` wird zu `http://localhost:18081/ch.so.daten/file.parquet`.
 - Enthält ein XTF `${DOWNLOAD_URL}` und ist `download-url` leer, schlägt der Katalog-Load kontrolliert fehl.
 - `download-url` darf eine absolute `http(s)`-URL oder ein root-relativer Pfad wie `/downloads` sein.
@@ -85,8 +85,8 @@ Download-URL-Platzhalter:
 
 ## Veröffentlichungsverweis auf S3
 
-Mit `DATENPORTAL_CATALOG_SOURCE_TYPE=manifest` und
-`DATENPORTAL_CATALOG_HTTP_URL=https://downloads.example.org/current.json` liest die
+Mit `DATENINFRASTRUKTUR_CATALOG_SOURCE_TYPE=manifest` und
+`DATENINFRASTRUKTUR_CATALOG_HTTP_URL=https://downloads.example.org/current.json` liest die
 Anwendung je Start/Reload genau einen Veröffentlichungsverweis und danach dessen
 Katalog-XTF. Es wird kein S3-SDK benötigt. Der Manifestvertrag ist im
 [Themenrepo](https://github.com/sogis/dateninfrastruktur-themenrepo)
@@ -101,14 +101,14 @@ die öffentliche Health-Antwort blendet Details aus. Der geschützte Admin-Statu
 zeigt Quelle und Eintragszahlen. Es wird keine künstliche XTF erzeugt.
 Eine fehlende referenzierte Datei oder ein ungültiger Verweis bleibt dagegen ein
 Fehler. Fehlgeschlagene Reloads erhalten den bisherigen Snapshot und Suchindex.
-Mit `DATENPORTAL_CATALOG_DUCKDB_SOURCE_TYPE=manifest` lädt dieselbe Auflösung
+Mit `DATENINFRASTRUKTUR_CATALOG_DUCKDB_SOURCE_TYPE=manifest` lädt dieselbe Auflösung
 zusätzlich `duckdb: "catalog-<releaseId>.duckdb"`. XTF und DuckDB stammen dadurch
 immer aus derselben Manifestgeneration, auch wenn sich `current.json` während
 der Downloads ändert. Auch `catalog: null` benötigt eine gültige DuckDB mit
 leerem `opendata`-Schema. Bei Fehlern bleiben beide bisherigen Artefakte aktiv.
 Es gibt keinen automatischen Rückfall auf eine gebündelte Fixture.
 
-DuckDB-Manifestmodus setzt `datenportal.catalog.source-type=manifest` voraus.
+DuckDB-Manifestmodus setzt `dateninfrastruktur.catalog.source-type=manifest` voraus.
 Eine separate DuckDB-HTTP-Adresse, Datei- oder Classpath-Location darf dann
 nicht gesetzt sein. Die XTF-Konfiguration bestimmt Manifestadresse und
 Manifest-Timeouts; beide Artefakte behalten ihre jeweiligen Timeouts und
@@ -198,7 +198,7 @@ Der geschützte Runtime-Reload ist nur aktiv, wenn ein Token gesetzt ist:
 ```yaml
 datenportal:
   admin:
-    reload-token: ${DATENPORTAL_ADMIN_RELOAD_TOKEN:}
+    reload-token: ${DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN:}
 ```
 
 Admin-Endpunkte:
@@ -211,7 +211,7 @@ X-Reload-Token: <token>
 
 Regeln:
 
-- `DATENPORTAL_ADMIN_RELOAD_TOKEN` darf nicht leer sein, wenn Reload/Status genutzt werden sollen.
+- `DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN` darf nicht leer sein, wenn Reload/Status genutzt werden sollen.
 - Bei leerem Token liefern die Admin-Endpunkte `503 Service Unavailable`.
 - Fehlendes oder falsches `X-Reload-Token` liefert `401 Unauthorized`.
 - Der Token wird constant-time verglichen und nicht geloggt.
@@ -351,4 +351,4 @@ datenportal:
       include-catalog-download-origin: true
 ```
 
-Bei `include-catalog-download-origin=true` wird die Origin aus `datenportal.catalog.download-url` automatisch ergänzt, sofern `download-url` eine absolute `http(s)`-URL ist. Für den lokalen Standard bedeutet das zusätzlich `http://localhost:18081`.
+Bei `include-catalog-download-origin=true` wird die Origin aus `dateninfrastruktur.catalog.download-url` automatisch ergänzt, sofern `download-url` eine absolute `http(s)`-URL ist. Für den lokalen Standard bedeutet das zusätzlich `http://localhost:18081`.

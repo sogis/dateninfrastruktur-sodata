@@ -66,7 +66,7 @@ FROM ${JVM_RUNTIME_IMAGE} AS jvm-runtime
 ARG IMAGE_VERSION=local
 ARG GIT_COMMIT=unknown
 
-LABEL org.opencontainers.image.title="datenportal-sodata-jvm" \
+LABEL org.opencontainers.image.title="dateninfrastruktur-sodata-jvm" \
       org.opencontainers.image.description="Datenportal Webanwendung Kanton Solothurn (JVM)" \
       org.opencontainers.image.version="${IMAGE_VERSION}" \
       org.opencontainers.image.revision="${GIT_COMMIT}"
@@ -80,7 +80,7 @@ RUN microdnf install -y tzdata ca-certificates \
 WORKDIR /opt/datenportal
 
 # The catalog fixtures, including catalog.duckdb, are included in the boot JAR.
-COPY --from=jvm-build --chown=185:0 /workspace/build/libs/datenportal-sodata-*.jar app.jar
+COPY --from=jvm-build --chown=185:0 /workspace/build/libs/dateninfrastruktur-sodata-*.jar app.jar
 
 # OpenShift may assign an arbitrary UID with group 0.
 RUN chgrp -R 0 /opt/datenportal \
@@ -102,7 +102,7 @@ FROM ${NATIVE_RUNTIME_IMAGE} AS native-runtime
 ARG IMAGE_VERSION=local
 ARG GIT_COMMIT=unknown
 
-LABEL org.opencontainers.image.title="datenportal-sodata" \
+LABEL org.opencontainers.image.title="dateninfrastruktur-sodata" \
       org.opencontainers.image.description="Datenportal Webanwendung Kanton Solothurn (GraalVM Native Image)" \
       org.opencontainers.image.version="${IMAGE_VERSION}" \
       org.opencontainers.image.revision="${GIT_COMMIT}"
@@ -114,7 +114,7 @@ RUN microdnf install -y tzdata ca-certificates libstdc++ \
 
 WORKDIR /opt/datenportal
 
-COPY --from=native-build --chown=1001:0 /workspace/build/native/nativeCompile/datenportal-sodata /opt/datenportal/app
+COPY --from=native-build --chown=1001:0 /workspace/build/native/nativeCompile/dateninfrastruktur-sodata /opt/datenportal/app
 
 # OpenShift may assign an arbitrary UID with group 0.
 RUN chgrp -R 0 /opt/datenportal \
