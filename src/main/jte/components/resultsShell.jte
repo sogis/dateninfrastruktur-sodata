@@ -33,3 +33,14 @@
 @else
   @template.components.entryTable(rows = results.rows())
 @endif
+@if(results.pagination().visible())
+  <nav class="dp-pagination" aria-label="Katalogseiten">
+    @if(results.pagination().previousHref() != null)
+      <a class="dp-action-pill" rel="prev" href="${results.pagination().previousHref()}" hx-get="${results.pagination().previousHref()}" hx-target="#dataset-results-shell" hx-swap="outerHTML" hx-push-url="true" hx-indicator="#dataset-loading">Vorherige Seite</a>
+    @endif
+    <span>Seite ${results.pagination().page()} von ${results.pagination().totalPages()}</span>
+    @if(results.pagination().nextHref() != null)
+      <a class="dp-action-pill" rel="next" href="${results.pagination().nextHref()}" hx-get="${results.pagination().nextHref()}" hx-target="#dataset-results-shell" hx-swap="outerHTML" hx-push-url="true" hx-indicator="#dataset-loading">Nächste Seite</a>
+    @endif
+  </nav>
+@endif

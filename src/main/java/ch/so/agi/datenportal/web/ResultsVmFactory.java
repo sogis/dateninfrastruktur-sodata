@@ -36,14 +36,15 @@ public final class ResultsVmFactory {
                 urlFactory.withView(normalized, ViewMode.CARDS),
                 normalized.sortMode(),
                 searchResult.entries().stream()
-                        .map(entry -> row(entry, normalized))
+                        .map(entry -> row(entry, normalized,searchResult.query().pageRequest()))
                         .toList(),
                 searchResult.entries().stream()
                         .map(this::card)
-                        .toList());
+                        .toList(),
+                searchResult.query().pageRequest().paged()?new ch.so.agi.datenportal.web.view.PaginationVm(searchResult.page(),searchResult.totalPages(),searchResult.page()>1?urlFactory.withPage(normalized,searchResult.page()-1,searchResult.size()):null,searchResult.page()<searchResult.totalPages()?urlFactory.withPage(normalized,searchResult.page()+1,searchResult.size()):null):ch.so.agi.datenportal.web.view.PaginationVm.none());
     }
 
-    private EntryRowVm row(CatalogEntry entry, CatalogQueryParams params) {
+    private EntryRowVm row(CatalogEntry entry, CatalogQueryParams params,ch.so.agi.datenportal.search.PageRequest paging) {
         var expanded = entry instanceof DatasetSeriesEntry && params.expanded().contains(entry.identifier());
         return new EntryRowVm(
                 entry.identifier(),
@@ -59,7 +60,7 @@ public final class ResultsVmFactory {
                         .toList(),
                 entry instanceof DatasetSeriesEntry,
                 expanded,
-                entry instanceof DatasetSeriesEntry ? urlFactory.toggleExpanded(params, entry.identifier()) : "",
+                entry instanceof DatasetSeriesEntry ? urlFactory.toggleExpanded(params, entry.identifier(),paging) : "",
                 expanded ? "Ausgaben einklappen" : "Ausgaben aufklappen",
                 expanded && entry instanceof DatasetSeriesEntry series
                         ? series.issuesNewestFirst().stream().map(issue -> issueRow(series, issue)).toList()

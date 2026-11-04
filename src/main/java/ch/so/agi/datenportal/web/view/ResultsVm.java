@@ -11,7 +11,12 @@ public record ResultsVm(
         String cardsHref,
         SortMode sortMode,
         List<EntryRowVm> rows,
-        List<EntryCardVm> cards) {
+        List<EntryCardVm> cards,
+        PaginationVm pagination) {
+
+    public ResultsVm(int totalElements,ViewMode viewMode,String listHref,String cardsHref,SortMode sortMode,List<EntryRowVm> rows,List<EntryCardVm> cards){
+        this(totalElements,viewMode,listHref,cardsHref,sortMode,rows,cards,PaginationVm.none());
+    }
 
     public ResultsVm {
         rows = List.copyOf(rows);

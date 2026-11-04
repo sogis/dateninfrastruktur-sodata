@@ -17,4 +17,16 @@ class CatalogDisclosureIT {
             page.screenshot(new Page.ScreenshotOptions().setPath(java.nio.file.Path.of(".runtime/database-catalog-browser.png")).setFullPage(true));
         }
     }
+    @Test void realHttpPaginationExposesEveryOneOfThirteenRootsAndHonorsPageAndSize()throws Exception{
+        try(var context=DatabaseFixture.start();var playwright=Playwright.create(new Playwright.CreateOptions().setEnv(Map.of("PLAYWRIGHT_SKIP_BROWSER_GC","1")));var browser=playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true))){
+            String base=DatabaseFixture.base(context);var page=browser.newPage();page.navigate(base+"/datasets?q=Paginationprobe&sort=title-asc");
+            assertEquals(10,page.locator(".dp-entry-row").count());assertTrue(page.locator("main").innerText().contains("13 Einträge"));
+            var identifiers=new java.util.HashSet<String>();page.locator(".dp-entry-row a[href^='/datasets/']").all().forEach(a->identifiers.add(a.getAttribute("href")));
+            page.locator(".dp-pagination a[rel=next]").click();page.waitForCondition(()->page.locator(".dp-entry-row").count()==3);assertTrue(page.url().contains("page=2"));
+            page.locator(".dp-entry-row a[href^='/datasets/']").all().forEach(a->identifiers.add(a.getAttribute("href")));assertEquals(13,identifiers.size());assertEquals(0,page.locator(".dp-pagination a[rel=next]").count());
+            page.navigate(base+"/datasets?q=Paginationprobe&sort=title-asc&page=2&size=1");assertEquals(1,page.locator(".dp-entry-row").count());assertTrue(page.locator(".dp-entry-row").innerText().contains("Paginationprobe 02"));assertTrue(page.locator(".dp-pagination").innerText().contains("Seite 2 von 13"));
+            assertTrue(page.locator(".dp-pagination a[rel=next]").getAttribute("href").contains("size=1"));
+            page.navigate(base+"/datasets?q=Paginationprobe&sort=title-asc&page=999&size=1");assertEquals(1,page.locator(".dp-entry-row").count());assertTrue(page.locator(".dp-entry-row").innerText().contains("Paginationprobe 13"));
+        }
+    }
 }

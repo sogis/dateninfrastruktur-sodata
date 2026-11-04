@@ -53,7 +53,7 @@ Suche: literale, leerzeichengetrennte **AND**-Begriffe in Titel, Beschreibung un
 Keywords; Gross-/Kleinschreibung wird ignoriert. Lucene-Operatoren, Wildcards,
 Fuzzy-/Phrasenoperatoren werden im DB-Modus nicht interpretiert. Symbole sind
 literal. Filter für Thema/Amt/Änderungszeit/Ressourcentyp, vorhandene Sortierungen
-und begrenzte Pagination bleiben erhalten; Identifier ist stabiler Tie-Breaker.
+und begrenzte Pagination sind im DB-Modus umgesetzt; Identifier ist stabiler Tie-Breaker.
 Die Facetten zählen nur öffentliche Rootdatensätze. Keine versteckten Entwürfe
 oder Ausgaben über Details, Facetten oder Suche.
 
@@ -91,3 +91,11 @@ HTTP-/Browseransichten; zwei JVM-Instanzen, echte Cayenne-Metadatenmutation und
 Dry-run/Apply/UUID-Idempotenz/Schutz späterer Adminänderungen. Zusätzlich echter
 Portal→Gateway→Keycloak→Admin-Browserweg und gezielte C-MINOR-Regressionsproben.
 Rohbelege/gesicherte JUnitberichte: ADMIN/.runtime/catalog-d-evidence/.
+
+Nach Review MA-D-REV-01: HTTP page/size werden explizit in die DB-Abfrage
+übernommen. Standard10, maximal100 Einträge; echte Vor-/Zurücknavigation
+erhält Suche/Filter/Sortierung und Seitengrösse. HTMX und vollständige Seiten
+verwenden dieselbe Darstellung. Ausgabenexpansion erhält das aktuelle Fenster;
+überhohe Seiten innerhalb der erlaubten Eingabegrenze werden auf die letzte
+Ergebnisseite begrenzt. Der bisherige Snapshotmodus bleibt unpaged. Ein echter
+13-Root-HTTP-/Browser-Reproducer prüft die vollständige Erreichbarkeit.

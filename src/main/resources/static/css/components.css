@@ -176,3 +176,5 @@
   color: #fff;
   font-size: 0.95rem;
 }
+
+.dp-pagination { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:1rem; margin-block:1.5rem; }

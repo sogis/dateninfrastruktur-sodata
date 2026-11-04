@@ -69,8 +69,16 @@ public final class CatalogUrlFactory {
         return buildPath(MOBILE_FILTERS_PATH, baseQuery(params, true));
     }
 
+    public String withPage(CatalogQueryParams params,int page,int size){
+        var query=baseQuery(params,true);query.put("page",List.of(Integer.toString(page)));query.put("size",List.of(Integer.toString(size)));return buildUrl(query);
+    }
+
     public String toggleExpanded(CatalogQueryParams params, String seriesId) {
+        return toggleExpanded(params,seriesId,ch.so.agi.datenportal.search.PageRequest.unpaged());
+    }
+    public String toggleExpanded(CatalogQueryParams params,String seriesId,ch.so.agi.datenportal.search.PageRequest paging){
         var query = baseQuery(params, true);
+        if(paging.paged()){query.put("page",List.of(Integer.toString(paging.page())));query.put("size",List.of(Integer.toString(paging.size())));}
         var expanded = new ArrayList<>(query.getOrDefault("expanded", List.of()));
         if (expanded.contains(seriesId)) {
             expanded.removeIf(seriesId::equals);

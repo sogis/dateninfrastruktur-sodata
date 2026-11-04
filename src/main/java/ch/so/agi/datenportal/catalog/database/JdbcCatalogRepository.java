@@ -103,10 +103,12 @@ public final class JdbcCatalogRepository {
         var query=input.search();var values=new ArrayList<Object>();String where=filter(query,values);
         int total=((Number)rows(c,"SELECT count(*) AS total FROM api_public.datasets d WHERE "+where,values.toArray()).getFirst().get("total")).intValue();
         String order=query.sortMode()==SortMode.TITLE_ASC?"lower(d.title),d.modified DESC,d.identifier":"d.modified DESC,lower(d.title),d.identifier";
-        values.add(query.pageRequest().size());values.add(query.pageRequest().offset());
+        int totalPages=(total+query.pageRequest().size()-1)/query.pageRequest().size();
+        int page=Math.min(query.pageRequest().page(),Math.max(1,totalPages));
+        values.add(query.pageRequest().size());values.add((page-1)*query.pageRequest().size());
         var entries=new ArrayList<CatalogEntry>();for(var row:rows(c,"SELECT d.* FROM api_public.datasets d WHERE "+where+" ORDER BY "+order+" LIMIT ? OFFSET ?",values.toArray()))entries.add(entry(c,row));
         var hits=entries.stream().map(e->SearchHit.withoutHighlight(e.identifier(),0.0f)).toList();
-        return new SearchResult(entries,hits,total,query.pageRequest().page(),query.pageRequest().size(),(total+query.pageRequest().size()-1)/query.pageRequest().size(),query);
+        return new SearchResult(entries,hits,total,page,query.pageRequest().size(),totalPages,new SearchQuery(query.q(),query.filters(),query.sortMode(),PageRequest.of(page,query.pageRequest().size())));
     }
     public Facets facets(Connection c)throws SQLException{
         var themes=rows(c,"SELECT theme,count(DISTINCT dataset_id) AS total FROM api_public.themes GROUP BY theme ORDER BY theme").stream().map(r->new FacetValue(string(r,"theme"),Theme.fromModelValue(string(r,"theme")).displayName(),((Number)r.get("total")).longValue())).toList();

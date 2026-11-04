@@ -15,7 +15,9 @@ public final class DatabaseCatalogController {
     public DatabaseCatalogController(CatalogQueryService query,HomePageVmFactory home,DetailPageVmFactory detail,FilterVmFactory filters){this.query=query;this.home=home;this.detail=detail;this.filters=filters;}
     @ModelAttribute("databaseMode") boolean databaseMode(){return true;}
     @GetMapping({"/","/datasets"})String index(@ModelAttribute CatalogQueryParams params,HttpServletRequest request,Model model){
-        var normalized=params.normalized();var result=query.search(new CatalogQuery(normalized.toSearchQuery()));var page=home.database(result.results(),normalized,result.facets());model.addAttribute("page",page);
+        var normalized=params.normalized();var base=normalized.toSearchQuery();
+        var paged=new ch.so.agi.datenportal.search.SearchQuery(base.q(),base.filters(),base.sortMode(),ch.so.agi.datenportal.search.PageRequest.of(params.getPage(),params.getSize()));
+        var result=query.search(new CatalogQuery(paged));var page=home.database(result.results(),normalized,result.facets());model.addAttribute("page",page);
         if(HtmxRequest.targetsResults(request)){model.addAttribute("results",page.results());model.addAttribute("filterPanel",page.filterPanel());model.addAttribute("queryParams",page.queryParams());return "fragments/catalogResults";}return "pages/catalog";
     }
     private CatalogQueryService.DatasetDetail find(String identifier){return query.findDataset(identifier).orElseThrow(()->new CatalogNotFoundException("Katalogeintrag nicht gefunden"));}
