@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
+@ch.so.agi.datenportal.config.SnapshotMode
 public final class ExplorePageController {
 
     private static final String UNAVAILABLE_REASON =

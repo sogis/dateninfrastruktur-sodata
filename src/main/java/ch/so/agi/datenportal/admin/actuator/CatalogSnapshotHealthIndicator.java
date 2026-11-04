@@ -7,6 +7,7 @@ import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.stereotype.Component;
 
 @Component
+@ch.so.agi.datenportal.config.SnapshotMode
 public final class CatalogSnapshotHealthIndicator implements HealthIndicator {
 
     private final CatalogService catalogService;

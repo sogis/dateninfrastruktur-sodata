@@ -1,8 +1,13 @@
 @import ch.so.agi.datenportal.web.view.SeriesDetailPageVm
 @param SeriesDetailPageVm page
-@template.layouts.main(chrome = page.chrome(), content = @`
+@param String requestAccessUrl = null
+@param boolean databaseMode = false
+@template.layouts.main(chrome = page.chrome(), databaseMode = databaseMode, content = @`
   <section class="dp-detail-page dp-series-detail-page">
     <div class="dp-container">
+      @if(requestAccessUrl != null)
+        <p><a class="dp-action-pill" href="${requestAccessUrl}">Datenzugang anfragen</a> · <a href="/access/me">Meine Zugänge</a></p>
+      @endif
       @template.components.detailHero(
         title = page.title(),
         description = page.description(),

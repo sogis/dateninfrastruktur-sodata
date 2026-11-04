@@ -16,12 +16,17 @@ public record DatasetSeriesEntry(
         List<String> keywords,
         AccessLevel accessLevel,
         CatalogEntryMetadata metadata,
-        List<DatasetIssueEntry> issues) implements CatalogEntry {
+        List<DatasetIssueEntry> issues,
+        Optional<LocalDate> catalogueModified) implements CatalogEntry {
 
     private static final Comparator<DatasetIssueEntry> ISSUE_ORDER =
             Comparator.comparing(DatasetIssueEntry::modified)
                     .reversed()
                     .thenComparing(DatasetIssueEntry::identifier);
+
+    public DatasetSeriesEntry(String identifier,String title,String description,Office publisher,Office creator,List<Theme> themes,List<String> keywords,AccessLevel accessLevel,CatalogEntryMetadata metadata,List<DatasetIssueEntry> issues){
+        this(identifier,title,description,publisher,creator,themes,keywords,accessLevel,metadata,issues,Optional.empty());
+    }
 
     public DatasetSeriesEntry(
             String identifier,
@@ -58,14 +63,15 @@ public record DatasetSeriesEntry(
         Objects.requireNonNull(metadata, "metadata must not be null");
         issues = List.copyOf(issues);
 
-        if (issues.isEmpty()) {
+        catalogueModified=catalogueModified==null?Optional.empty():catalogueModified;
+        if (issues.isEmpty() && catalogueModified.isEmpty()) {
             throw new IllegalArgumentException("Dataset series must contain at least one issue");
         }
     }
 
     @Override
     public LocalDate modified() {
-        return currentIssueOrThrow().modified();
+        return catalogueModified.orElseGet(()->currentIssueOrThrow().modified());
     }
 
     @Override
@@ -99,7 +105,7 @@ public record DatasetSeriesEntry(
 
     @Override
     public List<DistributionLink> distributionsForListing() {
-        return currentIssueOrThrow().primaryDistributions();
+        return currentIssue().map(DatasetIssueEntry::primaryDistributions).orElse(List.of());
     }
 
     @Override
@@ -109,7 +115,7 @@ public record DatasetSeriesEntry(
     }
 
     public String currentIssueLabelForDisplay() {
-        return currentIssueOrThrow().issueLabel();
+        return currentIssue().map(DatasetIssueEntry::issueLabel).orElse("Noch keine publizierte Ausgabe");
     }
 
     public int issueCount() {

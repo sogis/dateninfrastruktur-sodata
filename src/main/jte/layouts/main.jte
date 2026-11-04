@@ -2,6 +2,7 @@
 @import gg.jte.Content
 @param PageChromeVm chrome
 @param Content content
+@param boolean databaseMode = false
 <!doctype html>
 <html lang="de">
 <head>
@@ -18,6 +19,9 @@
   <a class="dp-skip-link" href="#main-content">Zum Inhalt springen</a>
   @template.components.chrome.soHeader(header = chrome.header(), webComponentsEnabled = chrome.assets().webComponentsEnabled())
   @template.components.chrome.soBreadcrumb(breadcrumb = chrome.breadcrumb(), webComponentsEnabled = chrome.assets().webComponentsEnabled())
+  @if(databaseMode)
+    <div class="dp-container"><nav aria-label="Persönlicher Datenzugang"><a href="/access/me">Meine Zugänge</a></nav></div>
+  @endif
   <main id="main-content" class="dp-main" tabindex="-1">
     @template.components.chrome.printHeader(header = chrome.header(), breadcrumb = chrome.breadcrumb())
     ${content}

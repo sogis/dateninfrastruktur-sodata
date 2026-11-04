@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequestMapping("/datasets")
+@ch.so.agi.datenportal.config.SnapshotMode
 public class CatalogFilterController {
 
     private final CatalogService catalogService;

@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '4.1.0'
+    id 'org.springframework.boot' version '4.1.2'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'org.graalvm.buildtools.native' version '1.1.14'
     id 'gg.jte.gradle' version '3.2.4'
@@ -93,6 +93,8 @@ sourceSets {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    runtimeOnly 'org.postgresql:postgresql'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-json'
@@ -283,4 +285,15 @@ tasks.named('check') {
 tasks.named('wrapper') {
     gradleVersion = '9.5.1'
     distributionType = Wrapper.DistributionType.BIN
+}
+// These suites require an explicitly owned primary PostgreSQL runtime.
+tasks.named('test') { exclude '**/*IT.class' }
+tasks.register('managementDatabaseTest', Test) {
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    include '**/*IT.class'
+    useJUnitPlatform()
+    outputs.upToDateWhen { false }
+    outputs.cacheIf { false }
+    environment 'PLAYWRIGHT_SKIP_BROWSER_GC', '1'
 }

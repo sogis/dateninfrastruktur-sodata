@@ -50,6 +50,7 @@ public record CatalogDuckDbProperties(
             throw new IllegalArgumentException("dateninfrastruktur.catalog.duckdb.max-size must be greater than zero");
         }
         switch (sourceType) {
+            case DATABASE -> throw new IllegalArgumentException("DuckDB is unavailable in database catalog mode");
             case CLASSPATH -> requireClasspathLocation(classpathLocation);
             case FILE -> {
                 if (fileLocation == null) {

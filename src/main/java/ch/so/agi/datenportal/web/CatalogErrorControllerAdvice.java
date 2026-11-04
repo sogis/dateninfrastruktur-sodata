@@ -50,4 +50,11 @@ public final class CatalogErrorControllerAdvice {
                 "Der Suchdienst ist momentan nicht verfügbar. Bitte versuchen Sie es später erneut."));
         return "pages/error";
     }
+    @ExceptionHandler(ch.so.agi.datenportal.catalog.database.CatalogDatabaseUnavailableException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public String databaseUnavailable(Model model){model.addAttribute("page",errorPageVmFactory.serviceUnavailable("Der Katalog ist momentan nicht verfügbar. Bitte versuchen Sie es später erneut."));return "pages/error";}
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String invalidQuery(Model model){model.addAttribute("page",errorPageVmFactory.notFound("Die Katalogabfrage ist ungültig."));return "pages/notFound";}
 }

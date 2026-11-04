@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping({"/", "/datasets"})
+@ch.so.agi.datenportal.config.SnapshotMode
 public class CatalogController {
 
     private final CatalogService catalogService;

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
+@ch.so.agi.datenportal.config.SnapshotMode
 public final class CatalogDetailController {
 
     private final CatalogService catalogService;

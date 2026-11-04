@@ -167,7 +167,7 @@ public final class DetailPageVmFactory {
     }
 
     private List<SeriesIssueVm> seriesIssues(DatasetSeriesEntry series) {
-        String currentIdentifier = series.currentIssueOrThrow().identifier();
+        String currentIdentifier = series.currentIssue().map(DatasetIssueEntry::identifier).orElse("");
         return series.issues().stream()
                         .sorted(seriesIssueOrder(currentIdentifier))
                         .map(issue -> new SeriesIssueVm(

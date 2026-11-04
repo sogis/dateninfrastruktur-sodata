@@ -4,14 +4,21 @@ Eigenständige Übernahme der Datenportal-Webanwendung für die lokale Dateninfr
 
 Serverseitig gerenderte Datenportal-Webanwendung für den Kanton Solothurn.
 
-## MVP-Status
+## Aktueller Management-/Access-Modus
+
+Der PostgreSQL-Modus liest freigegebene Views mit read-only-Konto und liefert
+aktuelle Katalog-/Detailseiten ohne Snapshotbootstrap. Start, Grenzen, Suche,
+Artefaktsperren und Nachweise: [DB-Katalog](docs/database-catalog.md).
+Die unabhängigen MA-Gates werden im Dev-Stack geführt.
+
+## Bisheriger Snapshotmodus
 
 Die Anwendung lädt PublishedCatalog-XTF/XML, baut einen immutable `CatalogSnapshot` und einen Lucene-Index, rendert Katalog- und Detailseiten mit Spring Boot, JTE und HTMX und integriert Header/Breadcrumb über vendorte `so-web-components`.
 
 Enthalten:
 
 - Java 25
-- Spring Boot 4.1.0
+- Spring Boot 4.1.2
 - Gradle Groovy DSL
 - JTE-Templates mit produktionssicherem Standard und explizitem Local-Mode
 - lokal vendortes HTMX
@@ -21,7 +28,7 @@ Enthalten:
 - Listenansicht, Kartenansicht und Datenreihen-Expansion
 - Detailseiten für Datensätze, Datenreihen und Ausgaben
 - eingeschränktes Markdown für Beschreibungen mit sichtbaren Zeilenumbrüchen; [Erfassungsregeln](docs/metadata-text.md)
-- Classpath-, Datei-, HTTP- und Manifest-Katalogquelle
+- explizite PostgreSQL-Viewquelle sowie bisherige Classpath-, Datei-, HTTP- und Manifest-Katalogquelle
 - Explore-Schema-Explorer mit DuckDB-Catalog-Artefakt
 - geschützter Runtime-Reload unter `/admin/catalog/reload`
 - Status unter `/admin/catalog/status`

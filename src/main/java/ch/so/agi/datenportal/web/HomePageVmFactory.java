@@ -35,14 +35,19 @@ public final class HomePageVmFactory {
             SearchResult searchResult,
             CatalogQueryParams queryParams,
             Facets facets) {
+        return create(snapshot.catalog().description().orElse(LEAD),searchResult,queryParams,facets);
+    }
+
+    public CatalogPageVm create(String description,SearchResult searchResult,CatalogQueryParams queryParams,Facets facets){
         var normalized = queryParams.normalized();
         return new CatalogPageVm(
                 pageChromeFactory.catalogPage(PAGE_TITLE + " | Datenportal"),
                 PAGE_TITLE,
-                MetadataTextRenderer.full(snapshot.catalog().description().orElse(LEAD)),
+                MetadataTextRenderer.full(description),
                 SECONDARY_LEAD,
                 normalized,
                 filterVmFactory.create(normalized, facets),
                 resultsVmFactory.create(searchResult, normalized));
     }
+    public CatalogPageVm database(SearchResult searchResult,CatalogQueryParams queryParams,Facets facets){return create(LEAD,searchResult,queryParams,facets);}
 }

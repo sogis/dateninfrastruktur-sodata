@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 @Service
+@ch.so.agi.datenportal.config.SnapshotMode
 public final class CatalogSnapshotLoader {
 
     private final CatalogInputsSource inputsSource;

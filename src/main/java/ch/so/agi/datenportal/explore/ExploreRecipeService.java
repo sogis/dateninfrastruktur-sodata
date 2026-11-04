@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
+@ch.so.agi.datenportal.config.SnapshotMode
 public final class ExploreRecipeService {
 
     private static final int NULL_PROFILE_COLUMN_LIMIT = 8;

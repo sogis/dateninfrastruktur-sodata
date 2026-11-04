@@ -11,6 +11,7 @@ import java.util.function.Function;
 import org.springframework.stereotype.Service;
 
 @Service
+@ch.so.agi.datenportal.config.SnapshotMode
 public final class CatalogService {
 
     private final AtomicReference<CatalogSnapshot> snapshotReference;

@@ -18,6 +18,7 @@ import java.time.Duration;
 import java.util.Arrays;
 
 @Controller
+@ch.so.agi.datenportal.config.SnapshotMode
 public final class CatalogArtifactController {
 
     private final CatalogService catalogService;

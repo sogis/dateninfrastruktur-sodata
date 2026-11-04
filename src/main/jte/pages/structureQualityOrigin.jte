@@ -1,8 +1,13 @@
 @import ch.so.agi.datenportal.web.view.StructureQualityOriginPageVm
 @param StructureQualityOriginPageVm page
-@template.layouts.main(chrome = page.chrome(), content = @`
+@param String requestAccessUrl = null
+@param boolean databaseMode = false
+@template.layouts.main(chrome = page.chrome(), databaseMode = databaseMode, content = @`
   <section class="dp-detail-page dp-structure-quality-origin-page">
     <div class="dp-container">
+      @if(requestAccessUrl != null)
+        <p><a class="dp-action-pill" href="${requestAccessUrl}">Datenzugang anfragen</a> · <a href="/access/me">Meine Zugänge</a></p>
+      @endif
       <header class="dp-detail-hero dp-structure-hero">
         <h1 class="dp-detail-title">${page.title()}</h1>
       </header>

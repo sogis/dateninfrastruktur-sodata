@@ -25,7 +25,6 @@ import org.springframework.core.io.ResourceLoader;
 @ImportRuntimeHints(CatalogResourceRuntimeHints.class)
 @EnableConfigurationProperties({
         AdminProperties.class,
-        CatalogDuckDbProperties.class,
         CatalogProperties.class,
         ExploreProperties.class,
         SearchProperties.class,
@@ -38,7 +37,7 @@ public class CatalogImportConfiguration {
         return Clock.systemUTC();
     }
 
-    @Bean
+    @Bean @SnapshotMode
     CatalogInputsSource catalogInputsSource(CatalogProperties properties, CatalogDuckDbProperties duckDb,
             ResourceLoader resourceLoader, Clock clock) {
         if (duckDb.sourceType() == CatalogProperties.SourceType.MANIFEST) {
@@ -63,6 +62,7 @@ public class CatalogImportConfiguration {
             case CLASSPATH -> new ClasspathCatalogSource(
                     resourceLoader, properties.classpathLocation(), properties.maxSize(), clock);
             case FILE -> new FileCatalogSource(properties.fileLocation(), properties.maxSize(), clock);
+            case DATABASE -> throw new IllegalStateException("Database mode never loads an XTF catalog");
             case MANIFEST -> new ManifestCatalogSource(properties.httpUrl(), properties.httpConnectTimeout(),
                     properties.httpReadTimeout(), properties.maxSize(), clock);
             case HTTP -> new HttpCatalogSource(
@@ -83,6 +83,7 @@ public class CatalogImportConfiguration {
             case CLASSPATH -> new ClasspathCatalogSource(
                     resourceLoader, properties.classpathLocation(), properties.maxSize(), clock);
             case FILE -> new FileCatalogSource(properties.fileLocation(), properties.maxSize(), clock);
+            case DATABASE -> throw new IllegalStateException("Database mode never loads DuckDB");
             case MANIFEST -> throw new IllegalArgumentException("Manifest sources do not configure catalog.duckdb.");
             case HTTP -> new HttpCatalogSource(
                     properties.httpUrl(),
@@ -93,13 +94,15 @@ public class CatalogImportConfiguration {
         };
     }
 
-    @Bean
+    @Bean @SnapshotMode
     PublishedCatalogParser publishedCatalogParser() {
         return new XtfPublishedCatalogParser();
     }
 
-    @Bean
+    @Bean @SnapshotMode
     CatalogSnapshot initialCatalogSnapshot(CatalogSnapshotLoader loader) {
         return loader.load();
     }
+    @Configuration @SnapshotMode @EnableConfigurationProperties(CatalogDuckDbProperties.class)
+    static class LegacyDuckDbConfiguration {}
 }

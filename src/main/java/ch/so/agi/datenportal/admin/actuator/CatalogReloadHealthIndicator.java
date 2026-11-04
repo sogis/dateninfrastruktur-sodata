@@ -8,6 +8,7 @@ import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.stereotype.Component;
 
 @Component
+@ch.so.agi.datenportal.config.SnapshotMode
 public final class CatalogReloadHealthIndicator implements HealthIndicator {
 
     private final CatalogReloadService reloadService;

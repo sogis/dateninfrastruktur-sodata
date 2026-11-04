@@ -47,6 +47,7 @@ public record CatalogProperties(
             throw new IllegalArgumentException("dateninfrastruktur.catalog.max-size must be greater than zero");
         }
         switch (sourceType) {
+            case DATABASE -> { /* Primary SQL views have their own validated connection configuration. */ }
             case CLASSPATH -> requireClasspathLocation(classpathLocation);
             case FILE -> {
                 if (fileLocation == null) {
@@ -62,7 +63,8 @@ public record CatalogProperties(
         CLASSPATH,
         FILE,
         HTTP,
-        MANIFEST
+        MANIFEST,
+        DATABASE
     }
 
     public boolean isClasspathSource() {

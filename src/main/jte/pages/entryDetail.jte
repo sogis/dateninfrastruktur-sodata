@@ -1,8 +1,13 @@
 @import ch.so.agi.datenportal.web.view.EntryDetailPageVm
 @param EntryDetailPageVm page
-@template.layouts.main(chrome = page.chrome(), content = @`
+@param String requestAccessUrl = null
+@param boolean databaseMode = false
+@template.layouts.main(chrome = page.chrome(), databaseMode = databaseMode, content = @`
   <section class="dp-detail-page${page.seriesTitle().isPresent() ? " dp-issue-detail-page" : " dp-dataset-detail-page"}">
     <div class="dp-container">
+      @if(requestAccessUrl != null)
+        <p><a class="dp-action-pill" href="${requestAccessUrl}">Datenzugang anfragen</a> · <a href="/access/me">Meine Zugänge</a></p>
+      @endif
       @if(page.seriesTitle().isPresent())
         <p class="dp-detail-kicker">
           Datenreihe:
@@ -37,7 +42,7 @@
           @template.components.detailActionPanel(
             structureQualityOriginHref = page.structureQualityOriginHref(),
             structureQualityOriginLabel = "Struktur, Qualität und Herkunft",
-            exploreHref = page.exploreHref(),
+            exploreHref = databaseMode ? "" : page.exploreHref(),
             usageHref = page.usageHref(),
             openData = page.accessState().openData()
           )

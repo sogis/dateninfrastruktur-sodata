@@ -16,6 +16,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
+@ch.so.agi.datenportal.config.SnapshotMode
 public final class ExploreContextService {
 
     private final CatalogService catalogService;

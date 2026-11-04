@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
+@ch.so.agi.datenportal.config.SnapshotMode
 public final class CatalogReloadService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogReloadService.class);

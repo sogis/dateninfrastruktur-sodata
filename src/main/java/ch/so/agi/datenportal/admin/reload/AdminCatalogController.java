@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/catalog")
+@ch.so.agi.datenportal.config.SnapshotMode
 public final class AdminCatalogController {
 
     private final CatalogReloadService reloadService;
