@@ -99,3 +99,9 @@ verwenden dieselbe Darstellung. Ausgabenexpansion erhält das aktuelle Fenster;
 überhohe Seiten innerhalb der erlaubten Eingabegrenze werden auf die letzte
 Ergebnisseite begrenzt. Der bisherige Snapshotmodus bleibt unpaged. Ein echter
 13-Root-HTTP-/Browser-Reproducer prüft die vollständige Erreichbarkeit.
+
+MA-E: Registrierte DB-Distributionen tragen eine reine Darstellungsmarkierung
+`gatewayProtected`. Auch bei restricted bleiben die kanonischen Downloadlinks
+anklickbar; APISIX prüft den aktuellen Zugang bei jedem Abruf. Das Portal behauptet
+damit kein persönliches Recht und speichert keines. Legacy-URL-Links behalten
+ihr bisheriges Verhalten. Private Origins/Storagefelder erscheinen nicht im DTO.

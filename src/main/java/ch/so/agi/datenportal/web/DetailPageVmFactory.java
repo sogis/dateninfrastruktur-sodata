@@ -268,7 +268,7 @@ public final class DetailPageVmFactory {
                 .map(link -> new DownloadLinkVm(
                         link.displayLabel(),
                         link.preferredHref().toString(),
-                        link.displayLabel() + " herunterladen: " + ownerTitle))
+                        link.displayLabel() + " herunterladen: " + ownerTitle,link.gatewayProtected()))
                 .toList();
     }
 

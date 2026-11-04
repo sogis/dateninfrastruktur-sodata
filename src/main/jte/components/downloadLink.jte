@@ -4,11 +4,13 @@
 @param AccessStateVm accessState
 @param List<DownloadLinkVm> downloads
 <ul class="dp-download-list">
-  @if(accessState.openData())
+  @if(accessState.openData() || downloads.stream().anyMatch(d -> d.gatewayProtected()))
     @for(var download : downloads)
+      @if(accessState.openData() || download.gatewayProtected())
       <li>
         <a class="dp-download-link dp-action-pill" href="${download.href()}" aria-label="${download.ariaLabel()}">${download.label()}</a>
       </li>
+      @endif
     @endfor
   @else
     <li>

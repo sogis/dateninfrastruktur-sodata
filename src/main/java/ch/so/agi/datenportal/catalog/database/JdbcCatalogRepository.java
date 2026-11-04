@@ -57,7 +57,7 @@ public final class JdbcCatalogRepository {
     }
     private List<DistributionLink> distributions(Connection c,Map<String,Object> version)throws SQLException{
         if(version==null)return List.of();var links=new ArrayList<DistributionLink>();
-        for(var r:rows(c,"SELECT format,download_path FROM api_public.distributions WHERE version_id=? ORDER BY format,id",uuid(version,"id"))){URI path=URI.create(string(r,"download_path"));links.add(new DistributionLink(path,path,DistributionFormat.fromModelValue(string(r,"format"))));}return List.copyOf(links);
+        for(var r:rows(c,"SELECT format,download_path FROM api_public.distributions WHERE version_id=? ORDER BY format,id",uuid(version,"id"))){URI path=URI.create(string(r,"download_path"));links.add(new DistributionLink(path,Optional.of(path),DistributionFormat.fromModelValue(string(r,"format")),true));}return List.copyOf(links);
     }
     private CatalogEntryMetadata metadata(Connection c,Map<String,Object> root,Map<String,Object> issue,Map<String,Object> version)throws SQLException{
         var attributes=new ArrayList<DatasetAttribute>();Optional<String> model=Optional.empty();Optional<StructureSummary> structure=Optional.empty();

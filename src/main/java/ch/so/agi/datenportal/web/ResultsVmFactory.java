@@ -104,7 +104,7 @@ public final class ResultsVmFactory {
         return new DownloadLinkVm(
                 label,
                 link.preferredHref().toString(),
-                label + " herunterladen: " + entryTitle);
+                label + " herunterladen: " + entryTitle,link.gatewayProtected());
     }
 
     private static AccessStateVm accessState(CatalogEntry entry) {

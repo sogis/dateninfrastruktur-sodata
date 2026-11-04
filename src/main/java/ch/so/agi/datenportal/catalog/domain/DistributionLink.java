@@ -7,12 +7,17 @@ import java.util.Optional;
 public record DistributionLink(
         URI accessUrl,
         Optional<URI> downloadUrl,
-        DistributionFormat format) {
+        DistributionFormat format,
+        boolean gatewayProtected) {
 
     public DistributionLink {
         Objects.requireNonNull(accessUrl, "accessUrl must not be null");
         downloadUrl = Objects.requireNonNullElse(downloadUrl, Optional.empty());
         Objects.requireNonNull(format, "format must not be null");
+    }
+
+    public DistributionLink(URI accessUrl, Optional<URI> downloadUrl, DistributionFormat format) {
+        this(accessUrl, downloadUrl, format, false);
     }
 
     public DistributionLink(URI accessUrl, URI downloadUrl, DistributionFormat format) {
