@@ -2,7 +2,7 @@
 
 ## Vor Beginn lesen
 
-Lies ausdrücklich `../AGENTS.md` und `../dateninfrastruktur-dev-stack/docs/implementation/grundinstallation/AUFTRAG_GRUNDINSTALLATION.md` sowie den zur aktuellen Rolle gehörenden Startprompt im selben Dokumentationsordner. Fehlt `../AGENTS.md`, lies ersatzweise `../dateninfrastruktur-dev-stack/docs/implementation/grundinstallation/templates/AGENTS.workspace.md`. Verlasse dich nicht auf automatische Vererbung über Git-Grenzen. Weitere betroffene Schwesterrepos haben eigene AGENTS-Dateien.
+Lies ausdrücklich `../AGENTS.md` sowie den aktuellen Gesamtauftrag unter `../dateninfrastruktur-dev-stack/docs/implementation/management-and-access/EXECUTION_PLAN.md`, die dort referenzierten SPEC-Dateien, TEST_PLAN und den rollenbezogenen Start-/Reviewprompt. Die nachfolgenden Grundinstallationsregeln und Nachweise sind historisch auf ihren damaligen Auftrag begrenzt; sie verbieten den ausdrücklich beauftragten Ausbau MA-0 bis MA-E nicht. Weitere betroffene Schwesterrepos haben eigene AGENTS-Dateien.
 
 Diese Regeln gelten für Implementierung **und** Review. Ein Reviewauftrag erlaubt keine Änderungen an Produktdateien, Tests, Anforderungen oder AGENTS-Dateien; Befunde melden, nicht selbst reparieren. Builds/Tests nur mit eigenen Laufzeitdaten. Quellrepos, fremde Änderungen und laufende fremde Instanzen erhalten; keine Secrets in Git oder Berichten.
 
@@ -21,3 +21,7 @@ Diese Regeln gelten für Implementierung **und** Review. Ein Reviewauftrag erlau
 ## Nachweise
 
 Bestehende relevante Tests erhalten und ausführen. Lokal erzeugte gültige Veröffentlichung laden; Readiness und Webseiten über das Gateway prüfen. Den verwendeten Buildweg und tatsächlich ausgeführte Tests dokumentieren. Repoübergreifende Phasen- und Reviewberichte gehören in den Dev-Stack, nicht in duplizierte Auftragsordner dieses Repos.
+
+## Aktuelle Management-/Access-Etappe
+
+Sodata liest ausschliesslich die freigegebenen SQL-Views mit read-only-Konto. Schreibende Selbstbedienung liegt im Adminbackend; kein File-Streaming, keine Autorisierung aus Snapshot/Lucene. Im DB-Modus kein stiller XTF-Fallback und keine ungefilterten historischen Katalogartefakte. Bestehende Darstellung gezielt erhalten.
