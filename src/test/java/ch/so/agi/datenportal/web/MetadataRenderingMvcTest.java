@@ -5,22 +5,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ch.so.agi.datenportal.DatenportalApplication;
-import ch.so.agi.datenportal.catalog.CatalogTestArtifacts;
 import ch.so.agi.datenportal.catalog.domain.AccessLevel;
-import ch.so.agi.datenportal.catalog.domain.Catalog;
 import ch.so.agi.datenportal.catalog.domain.CatalogEntryMetadata;
-import ch.so.agi.datenportal.catalog.domain.CatalogSnapshot;
 import ch.so.agi.datenportal.catalog.domain.DatasetAttribute;
 import ch.so.agi.datenportal.catalog.domain.DatasetEntry;
 import ch.so.agi.datenportal.catalog.domain.DatasetIssueEntry;
 import ch.so.agi.datenportal.catalog.domain.DatasetSeriesEntry;
 import ch.so.agi.datenportal.catalog.domain.Office;
-import ch.so.agi.datenportal.search.CatalogDocumentMapper;
-import ch.so.agi.datenportal.search.CatalogSearchIndexBuilder;
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
+import ch.so.agi.datenportal.catalog.database.CatalogQuery;
+import ch.so.agi.datenportal.catalog.database.CatalogQueryService;
+import ch.so.agi.datenportal.search.Facets;
+import ch.so.agi.datenportal.search.SearchResult;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -33,7 +34,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(classes = {DatenportalApplication.class, MetadataRenderingMvcTest.FixtureConfiguration.class})
+@SpringBootTest(classes = {DatenportalApplication.class, CatalogMvcFixture.class, MetadataRenderingMvcTest.FixtureConfiguration.class}, properties = "di.test.empty-catalog=false")
 @AutoConfigureMockMvc
 class MetadataRenderingMvcTest {
     private static final String DESCRIPTION = "Das Attribut `gemeinde_nr`.\nWert **2401**.\n\n- *Hinweis*\n- Weiterer Punkt\n\n<script>alert('x')</script>";
@@ -70,9 +71,7 @@ class MetadataRenderingMvcTest {
     }
 
     @Test
-    void rendersCatalogDescriptionSeriesAndBothIssueRoutes() throws Exception {
-        assertThat(page("/"))
-                .contains("<div class=\"dp-lead dp-metadata-text\"><p>Katalog <strong>beschrieben</strong><br>Neue Zeile</p>");
+    void rendersSeriesAndBothIssueRoutes() throws Exception {
         assertThat(page("/series/serie")).contains("<p>Serie <code>nr</code><br>Zweite Zeile</p>");
         for (String route : List.of("/series/serie/issues/current", "/series/serie/issues/issue")) {
             assertThat(page(route)).contains("<p>Ausgabe <em>beschrieben</em><br>Zweite Zeile</p>");
@@ -110,7 +109,7 @@ class MetadataRenderingMvcTest {
     static class FixtureConfiguration {
         @Bean
         @Primary
-        CatalogSnapshot markdownSnapshot() {
+        CatalogQueryService markdownCatalog() {
             var metadata = metadata();
             var dataset = new DatasetEntry("markdown", "**Titel**", DESCRIPTION, OFFICE, OFFICE,
                     List.of(), List.of(), DATE, AccessLevel.OPEN, metadata, List.of());
@@ -122,11 +121,19 @@ class MetadataRenderingMvcTest {
                     List.of(), List.of(), DATE, AccessLevel.OPEN, metadata, List.of(), "2026", true);
             var series = new DatasetSeriesEntry("serie", "Datenreihe", "Serie `nr`\nZweite Zeile", OFFICE, OFFICE,
                     List.of(), List.of(), AccessLevel.OPEN, List.of(issue));
-            var catalog = new Catalog(List.of(dataset, longDataset), List.of(series),
-                    Optional.of("Katalog **beschrieben**\nNeue Zeile"));
-            return CatalogSnapshot.of(catalog, Instant.EPOCH, Duration.ZERO,
-                    CatalogTestArtifacts.published("markdown-test"), CatalogTestArtifacts.duckDb("markdown-test"),
-                    new CatalogSearchIndexBuilder(new CatalogDocumentMapper()).build(catalog.topLevelEntries()));
+            var service = mock(CatalogQueryService.class);
+            var datasetId = UUID.randomUUID();
+            var seriesId = UUID.randomUUID();
+            var selectedIssue = new CatalogQueryService.IssueDetail(seriesId, series, issue);
+            when(service.findDataset("markdown")).thenReturn(Optional.of(new CatalogQueryService.DatasetDetail(datasetId, dataset)));
+            when(service.findDataset("serie")).thenReturn(Optional.of(new CatalogQueryService.DatasetDetail(seriesId, series)));
+            when(service.findCurrentIssue("serie")).thenReturn(Optional.of(selectedIssue));
+            when(service.findIssue("serie", "issue")).thenReturn(Optional.of(selectedIssue));
+            when(service.search(any())).thenAnswer(call -> {
+                CatalogQuery query = call.getArgument(0);
+                return new CatalogQueryService.CatalogPage(new SearchResult(List.of(dataset, longDataset, series), 3, query.search()), new Facets(List.of(), List.of(), List.of()));
+            });
+            return service;
         }
 
         private static CatalogEntryMetadata metadata() {

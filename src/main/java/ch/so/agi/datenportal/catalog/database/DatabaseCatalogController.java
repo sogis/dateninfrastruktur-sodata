@@ -1,23 +1,20 @@
 package ch.so.agi.datenportal.catalog.database;
 import java.util.*;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.*;
 import ch.so.agi.datenportal.web.*;
 import ch.so.agi.datenportal.catalog.domain.*;
 
-@Controller @ConditionalOnProperty(name="dateninfrastruktur.catalog.source-type",havingValue="database")
+@Controller
 public final class DatabaseCatalogController {
     private final CatalogQueryService query;private final HomePageVmFactory home;private final DetailPageVmFactory detail;private final FilterVmFactory filters;
     public DatabaseCatalogController(CatalogQueryService query,HomePageVmFactory home,DetailPageVmFactory detail,FilterVmFactory filters){this.query=query;this.home=home;this.detail=detail;this.filters=filters;}
-    @ModelAttribute("databaseMode") boolean databaseMode(){return true;}
     @GetMapping({"/","/datasets"})String index(@ModelAttribute CatalogQueryParams params,HttpServletRequest request,Model model){
         var normalized=params.normalized();var base=normalized.toSearchQuery();
         var paged=new ch.so.agi.datenportal.search.SearchQuery(base.q(),base.filters(),base.sortMode(),ch.so.agi.datenportal.search.PageRequest.of(params.getPage(),params.getSize()));
-        var result=query.search(new CatalogQuery(paged));var page=home.database(result.results(),normalized,result.facets());model.addAttribute("page",page);
+        var result=query.search(new CatalogQuery(paged));var page=home.create(result.results(),normalized,result.facets());model.addAttribute("page",page);
         if(HtmxRequest.targetsResults(request)){model.addAttribute("results",page.results());model.addAttribute("filterPanel",page.filterPanel());model.addAttribute("queryParams",page.queryParams());return "fragments/catalogResults";}return "pages/catalog";
     }
     private CatalogQueryService.DatasetDetail find(String identifier){return query.findDataset(identifier).orElseThrow(()->new CatalogNotFoundException("Katalogeintrag nicht gefunden"));}
@@ -37,5 +34,4 @@ public final class DatabaseCatalogController {
     }
     @GetMapping("/datasets/filter-popover")String popover(@RequestParam("filter")String id,@ModelAttribute CatalogQueryParams params,Model model){var normalized=params.normalized();var panel=filters.create(normalized,query.facets(new CatalogQuery(normalized.toSearchQuery())));var group=panel.groups().stream().filter(g->g.id().equals(id)).findFirst().orElseThrow(()->new CatalogNotFoundException("Filter nicht gefunden"));model.addAttribute("group",group);model.addAttribute("queryParams",normalized);return "fragments/filterPopover";}
     @GetMapping("/datasets/mobile-filters")String mobile(@ModelAttribute CatalogQueryParams params,Model model){var normalized=params.normalized();model.addAttribute("filterPanel",filters.create(normalized,query.facets(new CatalogQuery(normalized.toSearchQuery()))));model.addAttribute("queryParams",normalized);return "fragments/mobileFilters";}
-    @GetMapping({"/catalog/**","/explore/**","/datasets/{identifier}/explore","/series/{identifier}/issues/{issueKey}/explore"})ResponseEntity<Void> unavailable(){return ResponseEntity.status(410).cacheControl(CacheControl.noStore()).build();}
 }

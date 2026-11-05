@@ -1,6 +1,5 @@
 package ch.so.agi.datenportal.web;
 
-import ch.so.agi.datenportal.catalog.domain.CatalogSnapshot;
 import ch.so.agi.datenportal.search.Facets;
 import ch.so.agi.datenportal.search.SearchResult;
 import ch.so.agi.datenportal.support.metadata.MetadataTextRenderer;
@@ -30,24 +29,15 @@ public final class HomePageVmFactory {
         this.resultsVmFactory = resultsVmFactory;
     }
 
-    public CatalogPageVm create(
-            CatalogSnapshot snapshot,
-            SearchResult searchResult,
-            CatalogQueryParams queryParams,
-            Facets facets) {
-        return create(snapshot.catalog().description().orElse(LEAD),searchResult,queryParams,facets);
-    }
-
-    public CatalogPageVm create(String description,SearchResult searchResult,CatalogQueryParams queryParams,Facets facets){
+    public CatalogPageVm create(SearchResult searchResult, CatalogQueryParams queryParams, Facets facets) {
         var normalized = queryParams.normalized();
         return new CatalogPageVm(
                 pageChromeFactory.catalogPage(PAGE_TITLE + " | Datenportal"),
                 PAGE_TITLE,
-                MetadataTextRenderer.full(description),
+                MetadataTextRenderer.full(LEAD),
                 SECONDARY_LEAD,
                 normalized,
                 filterVmFactory.create(normalized, facets),
                 resultsVmFactory.create(searchResult, normalized));
     }
-    public CatalogPageVm database(SearchResult searchResult,CatalogQueryParams queryParams,Facets facets){return create(LEAD,searchResult,queryParams,facets);}
 }

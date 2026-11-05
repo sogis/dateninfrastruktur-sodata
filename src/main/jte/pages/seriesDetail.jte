@@ -1,8 +1,7 @@
 @import ch.so.agi.datenportal.web.view.SeriesDetailPageVm
 @param SeriesDetailPageVm page
 @param String requestAccessUrl = null
-@param boolean databaseMode = false
-@template.layouts.main(chrome = page.chrome(), databaseMode = databaseMode, content = @`
+@template.layouts.main(chrome = page.chrome(), content = @`
   <section class="dp-detail-page dp-series-detail-page">
     <div class="dp-container">
       @if(requestAccessUrl != null)

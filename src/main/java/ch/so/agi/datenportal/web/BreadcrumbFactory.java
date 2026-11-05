@@ -28,12 +28,6 @@ public class BreadcrumbFactory {
         return new BreadcrumbVm(items);
     }
 
-    public BreadcrumbVm datasetExplore(DatasetEntry dataset) {
-        var items = catalogItems();
-        items.add(new BreadcrumbItemVm(dataset.title(), Optional.of("/datasets/" + encode(dataset.identifier())), false));
-        items.add(new BreadcrumbItemVm("Erkunden", Optional.empty(), true));
-        return new BreadcrumbVm(items);
-    }
 
     public BreadcrumbVm datasetStructureQualityOrigin(DatasetEntry dataset) {
         var items = catalogItems();
@@ -79,13 +73,6 @@ public class BreadcrumbFactory {
         return new BreadcrumbVm(items);
     }
 
-    public BreadcrumbVm issueExplore(DatasetSeriesEntry series, DatasetIssueEntry issue) {
-        var items = catalogItems();
-        items.add(new BreadcrumbItemVm(series.title(), Optional.of("/series/" + encode(series.identifier())), false));
-        items.add(new BreadcrumbItemVm(issue.issueLabel(), Optional.of(issueHref(series, issue)), false));
-        items.add(new BreadcrumbItemVm("Erkunden", Optional.empty(), true));
-        return new BreadcrumbVm(items);
-    }
 
     public BreadcrumbVm notFound() {
         return error("Seite nicht gefunden");

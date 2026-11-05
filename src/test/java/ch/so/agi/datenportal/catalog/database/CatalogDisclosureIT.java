@@ -7,7 +7,7 @@ class CatalogDisclosureIT {
     @Test void actualHttpAndBrowserExposeOnlyPublicMetadataAndCorrectSelfServiceLinks()throws Exception{
         var data=DatabaseFixture.data();try(var context=DatabaseFixture.start();var playwright=Playwright.create(new Playwright.CreateOptions().setEnv(Map.of("PLAYWRIGHT_SKIP_BROWSER_GC","1")));var browser=playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true))){
             String base=DatabaseFixture.base(context);
-            for(String path:new String[]{"/catalog/published-catalog.xtf","/catalog/catalog.duckdb","/datasets/"+data.get("openIdentifier")+"/explore","/explore/context/anything"})assertEquals(410,DatabaseFixture.get(base,path).statusCode(),path);
+            for(String path:new String[]{"/catalog/published-catalog.xtf","/catalog/catalog.duckdb","/datasets/"+data.get("openIdentifier")+"/explore","/explore/context/anything"})assertEquals(404,DatabaseFixture.get(base,path).statusCode(),path);
             assertEquals(404,DatabaseFixture.get(base,"/datasets/"+data.get("draftIdentifier")).statusCode());assertEquals(404,DatabaseFixture.get(base,"/series/"+data.get("seriesIdentifier")+"/issues/hidden").statusCode());
             assertEquals(200,DatabaseFixture.get(base,"/series/"+data.get("emptySeriesIdentifier")).statusCode());assertEquals(404,DatabaseFixture.get(base,"/series/"+data.get("emptySeriesIdentifier")+"/issues/current").statusCode());
             var page=browser.newPage();page.navigate(base+"/series/"+data.get("seriesIdentifier"));assertEquals("/access/requests/new?dataset="+data.get("seriesId"),page.locator("a",new Page.LocatorOptions().setHasText("Datenzugang anfragen")).getAttribute("href"));

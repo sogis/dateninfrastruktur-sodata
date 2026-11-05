@@ -43,14 +43,6 @@ public class PageChromeFactory {
                 footerViewModelFactory.create());
     }
 
-    public PageChromeVm datasetExplorePage(DatasetEntry dataset) {
-        return new PageChromeVm(
-                "Erkunden | " + dataset.title() + " | Datenportal",
-                headerViewModelFactory.forDetailPage(),
-                breadcrumbFactory.datasetExplore(dataset),
-                webAssetsVmFactory.create(),
-                footerViewModelFactory.create());
-    }
 
     public PageChromeVm datasetStructureQualityOriginPage(DatasetEntry dataset) {
         return new PageChromeVm(
@@ -106,14 +98,6 @@ public class PageChromeFactory {
                 footerViewModelFactory.create());
     }
 
-    public PageChromeVm issueExplorePage(DatasetSeriesEntry series, DatasetIssueEntry issue) {
-        return new PageChromeVm(
-                "Erkunden | " + issue.title() + " | Datenportal",
-                headerViewModelFactory.forDetailPage(),
-                breadcrumbFactory.issueExplore(series, issue),
-                webAssetsVmFactory.create(),
-                footerViewModelFactory.create());
-    }
 
     public PageChromeVm notFoundPage() {
         return errorPage("Seite nicht gefunden | Datenportal", "Seite nicht gefunden");

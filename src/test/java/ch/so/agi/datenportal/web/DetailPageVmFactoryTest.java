@@ -345,7 +345,6 @@ class DetailPageVmFactoryTest {
         var page = factory.dataset(datasetWithMetadata(CatalogEntryMetadata.empty()));
 
         assertThat(page.structureQualityOriginHref()).isEqualTo("/datasets/dataset/structure-quality-origin");
-        assertThat(page.exploreHref()).isEqualTo("/datasets/dataset/explore");
     }
 
     @Test
@@ -644,7 +643,6 @@ class DetailPageVmFactoryTest {
                         tuple("Zeitreihen-Team", Optional.empty()),
                         tuple("zeitreihe@example.test", Optional.of("mailto:zeitreihe@example.test")));
         assertThat(page.structureQualityOriginHref()).isEqualTo("/series/series/issues/current/structure-quality-origin");
-        assertThat(page.exploreHref()).isEqualTo("/series/series/issues/current/explore");
         assertThat(page.relatedIssues())
                 .extracting(
                         issue -> issue.issueLabel(),
@@ -676,7 +674,6 @@ class DetailPageVmFactoryTest {
 
         assertThat(page.currentIssue()).isFalse();
         assertThat(page.structureQualityOriginHref()).isEqualTo("/series/series/issues/series-2025/structure-quality-origin");
-        assertThat(page.exploreHref()).isEqualTo("/series/series/issues/series-2025/explore");
         assertThat(page.relatedIssues())
                 .extracting(issue -> issue.issueLabel(), issue -> issue.detailHref(), issue -> issue.current())
                 .containsExactly(

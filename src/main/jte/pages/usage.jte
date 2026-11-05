@@ -1,8 +1,7 @@
 @import ch.so.agi.datenportal.web.view.UsagePageVm
 @param UsagePageVm page
 @param String requestAccessUrl = null
-@param boolean databaseMode = false
-@template.layouts.main(chrome = page.chrome(), databaseMode = databaseMode, content = @`
+@template.layouts.main(chrome = page.chrome(), content = @`
   <section class="dp-detail-page dp-usage-page">
     <div class="dp-container">
       @if(requestAccessUrl != null)

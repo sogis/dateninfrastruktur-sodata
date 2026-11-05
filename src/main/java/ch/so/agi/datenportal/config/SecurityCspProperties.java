@@ -2,14 +2,12 @@ package ch.so.agi.datenportal.config;
 
 import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @ConfigurationProperties(prefix = "dateninfrastruktur.security.csp")
 public record SecurityCspProperties(
-        List<String> connectSrc,
-        @DefaultValue("true") boolean includeCatalogDownloadOrigin) {
+        List<String> connectSrc) {
 
-    private static final List<String> DEFAULT_CONNECT_SRC = List.of("'self'", "https://data.so.ch");
+    private static final List<String> DEFAULT_CONNECT_SRC = List.of("'self'");
 
     public SecurityCspProperties {
         connectSrc = normalizeConnectSrc(connectSrc);

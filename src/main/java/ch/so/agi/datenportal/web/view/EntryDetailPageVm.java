@@ -12,7 +12,6 @@ public record EntryDetailPageVm(
         Html description,
         AccessStateVm accessState,
         String structureQualityOriginHref,
-        String exploreHref,
         String usageHref,
         boolean currentIssue,
         List<DetailFeatureVm> features,

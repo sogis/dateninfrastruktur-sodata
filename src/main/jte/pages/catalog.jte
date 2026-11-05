@@ -1,7 +1,6 @@
 @import ch.so.agi.datenportal.web.view.CatalogPageVm
 @param CatalogPageVm page
-@param boolean databaseMode = false
-@template.layouts.main(chrome = page.chrome(), databaseMode = databaseMode, content = @`
+@template.layouts.main(chrome = page.chrome(), content = @`
   <section class="dp-catalog-intro">
     <div class="dp-container">
       <h1 class="dp-page-title">${page.title()}</h1>

@@ -41,29 +41,6 @@ management:
       enabled: false
 
 dateninfrastruktur:
-  catalog:
-    http-connect-timeout: 5s
-    http-read-timeout: 30s
-    max-size: 50MB
-    download-url: ${DOWNLOAD_URL:}
-  admin:
-    reload-token: ${DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN:}
-  security:
-    csp:
-      connect-src:
-        - "'self'"
-        - "https://data.so.ch"
-      include-catalog-download-origin: true
-  explore:
-    enabled: true
-    max-preview-rows: 100
-    max-result-rows: 10000
-    query-timeout-ms: 30000
-    charts-enabled: true
-    webr-enabled: true
-  search:
-    default-page-size: 10
-    max-page-size: 100
   web-components:
     enabled: true
     version: "0.1.10"

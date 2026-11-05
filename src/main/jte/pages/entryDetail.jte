@@ -1,8 +1,7 @@
 @import ch.so.agi.datenportal.web.view.EntryDetailPageVm
 @param EntryDetailPageVm page
 @param String requestAccessUrl = null
-@param boolean databaseMode = false
-@template.layouts.main(chrome = page.chrome(), databaseMode = databaseMode, content = @`
+@template.layouts.main(chrome = page.chrome(), content = @`
   <section class="dp-detail-page${page.seriesTitle().isPresent() ? " dp-issue-detail-page" : " dp-dataset-detail-page"}">
     <div class="dp-container">
       @if(requestAccessUrl != null)
@@ -42,7 +41,6 @@
           @template.components.detailActionPanel(
             structureQualityOriginHref = page.structureQualityOriginHref(),
             structureQualityOriginLabel = "Struktur, Qualität und Herkunft",
-            exploreHref = databaseMode ? "" : page.exploreHref(),
             usageHref = page.usageHref(),
             openData = page.accessState().openData()
           )

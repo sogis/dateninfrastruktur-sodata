@@ -1,6 +1,5 @@
 package ch.so.agi.datenportal.search;
 
-import ch.so.agi.datenportal.config.SearchProperties;
 
 public record PageRequest(int page, int size, boolean paged) {
 
@@ -28,14 +27,4 @@ public record PageRequest(int page, int size, boolean paged) {
         return Math.max(0, page - 1) * Math.max(0, size);
     }
 
-    public PageRequest normalized(SearchProperties properties) {
-        if (!paged) {
-            return this;
-        }
-
-        int normalizedPage = Math.max(1, page);
-        int normalizedSize = size > 0 ? size : properties.defaultPageSize();
-        normalizedSize = Math.min(normalizedSize, properties.maxPageSize());
-        return PageRequest.of(normalizedPage, normalizedSize);
-    }
 }

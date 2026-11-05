@@ -101,13 +101,7 @@ public final class CatalogUrlFactory {
         return "/datasets/" + pathSegment(identifier);
     }
 
-    public String datasetExplore(String identifier) {
-        return datasetDetail(identifier) + "/explore";
-    }
 
-    public String datasetExploreContext(String identifier) {
-        return datasetExplore(identifier) + "/context.json";
-    }
 
     public String datasetStructureQualityOrigin(String identifier) {
         return datasetDetail(identifier) + "/structure-quality-origin";
@@ -133,13 +127,7 @@ public final class CatalogUrlFactory {
         return currentIssueDetail(seriesIdentifier) + "/usage";
     }
 
-    public String currentIssueExplore(String seriesIdentifier) {
-        return currentIssueDetail(seriesIdentifier) + "/explore";
-    }
 
-    public String currentIssueExploreContext(String seriesIdentifier) {
-        return currentIssueExplore(seriesIdentifier) + "/context.json";
-    }
 
     public String issueDetail(String seriesIdentifier, String issueIdentifier) {
         return seriesDetail(seriesIdentifier) + "/issues/" + pathSegment(issueIdentifier);
@@ -153,13 +141,7 @@ public final class CatalogUrlFactory {
         return issueDetail(seriesIdentifier, issueIdentifier) + "/usage";
     }
 
-    public String issueExplore(String seriesIdentifier, String issueIdentifier) {
-        return issueDetail(seriesIdentifier, issueIdentifier) + "/explore";
-    }
 
-    public String issueExploreContext(String seriesIdentifier, String issueIdentifier) {
-        return issueExplore(seriesIdentifier, issueIdentifier) + "/context.json";
-    }
 
     private LinkedHashMap<String, List<String>> baseQuery(CatalogQueryParams params, boolean includeExpanded) {
         var normalized = params.normalized();

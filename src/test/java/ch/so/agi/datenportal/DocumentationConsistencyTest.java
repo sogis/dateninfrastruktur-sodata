@@ -10,17 +10,16 @@ import org.junit.jupiter.api.Test;
 class DocumentationConsistencyTest {
 
     @Test
-    void configurationDocumentsReloadActuatorAndSecurityDefaults() throws IOException {
+    void configurationDocumentsDatabaseActuatorAndSecurityDefaults() throws IOException {
         String configuration = Files.readString(Path.of("docs/configuration.md"));
 
         assertThat(configuration)
-                .contains("DATENINFRASTRUKTUR_ADMIN_RELOAD_TOKEN")
-                .contains("X-Reload-Token")
+                .contains("DATENINFRASTRUKTUR_CATALOG_DATABASE_JDBCURL", "di_public")
                 .contains("/actuator/health")
                 .contains("/actuator/health/liveness")
                 .contains("/actuator/health/readiness")
                 .contains("/actuator/info")
-                .contains("server.error.include-stacktrace")
+                .contains("spring.web.error.include-stacktrace")
                 .contains("X-Content-Type-Options")
                 .contains("Content-Security-Policy");
     }

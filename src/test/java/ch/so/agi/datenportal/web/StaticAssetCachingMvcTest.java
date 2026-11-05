@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest
+@SpringBootTest(classes = {ch.so.agi.datenportal.DatenportalApplication.class, CatalogMvcFixture.class})
 @AutoConfigureMockMvc
 class StaticAssetCachingMvcTest {
 
@@ -34,84 +34,6 @@ class StaticAssetCachingMvcTest {
                 .andExpect(status().isOk())
                 .andExpect(header().string("Cache-Control", allOf(containsString("max-age=3600"), containsString("public"))))
                 .andExpect(content().contentTypeCompatibleWith("text/css"));
-    }
-
-    @Test
-    void exploreIslandAssetsUseShortCacheHeader() throws Exception {
-        mockMvc.perform(get("/explore/assets/explore.js"))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Cache-Control", allOf(containsString("max-age=3600"), containsString("public"))))
-                .andExpect(header().string(
-                        "Content-Security-Policy",
-                        containsString("script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval'")))
-                .andExpect(content().string(containsString("datenportal-explore-root")));
-
-        mockMvc.perform(get("/explore/assets/explore.css"))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Cache-Control", allOf(containsString("max-age=3600"), containsString("public"))))
-                .andExpect(content().string(containsString(".dp-explore-workbench")));
-    }
-
-    @Test
-    void exploreDuckDbExtensionsUseLongCacheHeader() throws Exception {
-        mockMvc.perform(get("/explore-extensions/v1.5.4/wasm_mvp/parquet.duckdb_extension.wasm"))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Cache-Control", allOf(containsString("max-age=31536000"), containsString("public"))));
-    }
-
-    @Test
-    void webRRuntimeAndPackageMirrorUseLongCacheHeader() throws Exception {
-        mockMvc.perform(get("/webr/0.6.0/webr.mjs"))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Cache-Control", allOf(containsString("max-age=31536000"), containsString("public"))))
-                .andExpect(header().string(
-                        "Content-Security-Policy",
-                        containsString("script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval'")))
-                .andExpect(content().string(containsString("WebR")));
-
-        mockMvc.perform(get("/webr-packages/bin/emscripten/contrib/4.6/PACKAGES"))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Cache-Control", allOf(containsString("max-age=31536000"), containsString("public"))))
-                .andExpect(content().string(containsString("Package: ggplot2")));
-
-        mockMvc.perform(get("/webr-packages/bin/emscripten/contrib/4.6/PACKAGES.rds"))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Cache-Control", allOf(containsString("max-age=31536000"), containsString("public"))))
-                .andExpect(header().string(
-                        "Content-Security-Policy",
-                        containsString("script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval'")));
-    }
-
-    @Test
-    void exploreDuckDbWasmUsesBrotliWhenAccepted() throws Exception {
-        mockMvc.perform(get("/explore/assets/duckdb-mvp.wasm").header("Accept-Encoding", "br, gzip"))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Content-Encoding", "br"))
-                .andExpect(header().string("Vary", "Accept-Encoding"));
-    }
-
-    @Test
-    void exploreDuckDbWasmUsesGzipWhenBrotliIsNotAccepted() throws Exception {
-        mockMvc.perform(get("/explore/assets/duckdb-mvp.wasm").header("Accept-Encoding", "gzip"))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Content-Encoding", "gzip"))
-                .andExpect(header().string("Vary", "Accept-Encoding"));
-    }
-
-    @Test
-    void exploreDuckDbWasmFallsBackToOriginalWhenNoEncodingIsAccepted() throws Exception {
-        mockMvc.perform(get("/explore/assets/duckdb-mvp.wasm"))
-                .andExpect(status().isOk())
-                .andExpect(header().doesNotExist("Content-Encoding"));
-    }
-
-    @Test
-    void exploreDuckDbExtensionUsesBrotliWhenAccepted() throws Exception {
-        mockMvc.perform(get("/explore-extensions/v1.5.4/wasm_mvp/parquet.duckdb_extension.wasm")
-                        .header("Accept-Encoding", "br, gzip"))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Content-Encoding", "br"))
-                .andExpect(header().string("Vary", "Accept-Encoding"));
     }
 
     @Test
@@ -188,11 +110,10 @@ class StaticAssetCachingMvcTest {
                 .andExpect(header().string("X-Frame-Options", "DENY"))
                 .andExpect(header().string("Permissions-Policy", containsString("geolocation=()")))
                 .andExpect(header().string("Content-Security-Policy", containsString("default-src 'self'")))
-                .andExpect(header().string("Content-Security-Policy", containsString("script-src 'self' 'wasm-unsafe-eval'")))
+                .andExpect(header().string("Content-Security-Policy", containsString("script-src 'self';")))
                 .andExpect(header().string("Content-Security-Policy", not(containsString("'unsafe-eval'"))))
                 .andExpect(header().string(
                         "Content-Security-Policy",
-                        containsString("connect-src 'self' https://data.so.ch http://localhost:8081")))
-                .andExpect(header().string("Content-Security-Policy", containsString("worker-src 'self' blob:")));
+                        containsString("connect-src 'self';")));
     }
 }
