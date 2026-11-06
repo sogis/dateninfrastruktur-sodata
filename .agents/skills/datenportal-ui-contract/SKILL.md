@@ -34,7 +34,6 @@ Before coding, read:
 4. `spec/mockups/current/cards.png`
 5. `spec/mockups/current/web-components.png`
 
-The UI contract is authoritative for UI details and is integrated into `datenportal_webapp_agent_spec_detailed_v5.md`; it overrides older mockups and older UI specification sections.
 
 ## Non-negotiable rules
 
