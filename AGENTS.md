@@ -1,52 +1,16 @@
-# AGENTS.md – dateninfrastruktur-sodata
+# dateninfrastruktur-sodata
 
-## Vor Beginn lesen
+Im gemeinsamen Dateninfrastruktur-Workspace vor repoübergreifender Arbeit
+`../AGENTS.md` ausdrücklich lesen und die Repo-Grenzen verifizieren. Bei einem
+Einzelclone gelten die lokalen Regeln und Bedienhinweise im README. Für
+repoübergreifende Aufträge zuerst den verifizierten Workspace bereitstellen.
 
-Lies ausdrücklich `../AGENTS.md` sowie den aktuellen Gesamtauftrag unter `../dateninfrastruktur-dev-stack/docs/implementation/management-and-access/EXECUTION_PLAN.md`, die dort referenzierten SPEC-Dateien, TEST_PLAN und den rollenbezogenen Start-/Reviewprompt. Die nachfolgenden Grundinstallationsregeln und Nachweise sind historisch auf ihren damaligen Auftrag begrenzt; sie verbieten den ausdrücklich beauftragten Ausbau MA-0 bis MA-E nicht. Weitere betroffene Schwesterrepos haben eigene AGENTS-Dateien.
+Sodata zeigt den öffentlichen Katalog. Es verwendet das Lesekonto
+`di_public` und die dafür freigegebenen Sichten in `api_public`.
+Datenbankzugriffe bleiben read-only mit konsistentem Snapshot. Fachliche
+Freigaben und Schreibvorgänge liegen beim Admin. Downloads laufen über
+Gateway, Autorisierung und Origin.
 
-Diese Regeln gelten für Implementierung **und** Review. Ein Reviewauftrag erlaubt keine Änderungen an Produktdateien, Tests, Anforderungen oder AGENTS-Dateien; Befunde melden, nicht selbst reparieren. Builds/Tests nur mit eigenen Laufzeitdaten. Quellrepos, fremde Änderungen und laufende fremde Instanzen erhalten; keine Secrets in Git oder Berichten.
-
-## Verantwortung
-
-Übernehme das vorhandene Sodata-Portal aus dem festgelegten Quellstand. Suche, Datensatzseiten, Katalogsnapshot, Manifestimport und Readiness bleiben funktional erhalten.
-
-## Besondere Regeln
-
-- Nur Änderungen für den eigenständigen lauffähigen Aufbau; kein neuer Login, keine neue Portal-Datenbank, keine Anträge/Freigaben oder ClickHouse-Anwendungsabfragen in dieser Etappe.
-- Bestehendes Dockerfile-Target `jvm-runtime` verwenden. Java-/Node-Anforderungen am übernommenen Build prüfen. Keine Neuimplementierung des Frontends oder zusätzliche Native-Image-Arbeit.
-- `DATENINFRASTRUKTUR_EXPLORE_ENABLED=false` im Stack; das vorhandene SQL-/R-Lab wird hier nicht erweitert.
-- Interne Package-/Konfigurations-/Artefaktnamen dürfen gemäss Legacy-Liste erhalten bleiben. Dockerfile-COPY-Pfade und Gradle-Artefaktname müssen zusammenpassen.
-- Manifest, Katalogartefakte und Reloadziele auf die lokale eigene Umgebung beziehen; keine bestehenden Dienste neu laden.
-
-## Nachweise
-
-Bestehende relevante Tests erhalten und ausführen. Lokal erzeugte gültige Veröffentlichung laden; Readiness und Webseiten über das Gateway prüfen. Den verwendeten Buildweg und tatsächlich ausgeführte Tests dokumentieren. Repoübergreifende Phasen- und Reviewberichte gehören in den Dev-Stack, nicht in duplizierte Auftragsordner dieses Repos.
-
-## Aktuelle Management-/Access-Etappe
-
-Sodata liest ausschliesslich die freigegebenen SQL-Views mit read-only-Konto. Schreibende Selbstbedienung liegt im Adminbackend; kein File-Streaming, keine Autorisierung aus Snapshot/Lucene. Im DB-Modus kein stiller XTF-Fallback und keine ungefilterten historischen Katalogartefakte. Bestehende Darstellung gezielt erhalten.
-
-## Aktiver Folgeauftrag MA-F0–MA-F4
-
-Vor Arbeit den vollständigen Auftrag unter
-`../dateninfrastruktur-dev-stack/docs/implementation/compose-consolidation/CODEX_STARTPROMPT.md`
-und alle dort referenzierten Spezifikationen lesen. Workspace-AGENTS ist bindend.
-Die früheren Betriebs-/Grundinstallationsgrenzen oben sind historische Regeln,
-keine Verbote dieser ausdrücklich beauftragten Konsolidierung. Fachliche MA-A–E-
-Verträge bleiben erhalten. MA-F erlaubt genau einen Compose-Verbund, einen PG16/
-PostGIS-Server und eine Instanz pro Dauer-Service. Kein HA, keine parallele
-Managementorchestrierung. APISIX wird aus Jenkins' Netzwerkraum gelöst.
-
-Bestehende identifizierte eigene Daten/Volumes/Identitäten/Secrets kontrolliert
-übernehmen, nicht durch leere Seeds ersetzen. Retire erst nach geprüftem Backup
-auch der Container-Schreibschichten. Keine fremden Ressourcen ändern. Phasen
-strikt nacheinander, unabhängige OpenCode2-/DeepSeek-Flash1017-Abnahme je Phase.
-Berichte unter compose-consolidation/, Rohbelege unter STACK/.runtime/compose-review/.
-
-## Geltung der historischen Aufträge
-
-Die vorstehenden MA-0–F-/Grundinstallationsgrenzen gelten nur für ihre damaligen
-Aufträge. Für den ausdrücklich aktivierten MA-G-Auftrag gilt `../AGENTS.md` und
-vollständig `../dateninfrastruktur-dev-stack/docs/implementation/storage-and-delivery/`.
-Aktive Altverträge werden gemäss MA-G ersetzt; Sicherheits- und Datenerhaltungsregeln
-bleiben bindend. Historische Dokumente und Nutzerarbeit nicht umschreiben.
+README.md und docs/database-catalog.md beschreiben Datenbankgrenze und
+Build. Den gepflegten Dockerfile-Target `jvm-runtime` und die
+vorhandenen Rollen- und Katalogtests verwenden.
