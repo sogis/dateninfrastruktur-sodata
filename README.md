@@ -16,4 +16,4 @@ und gelangen nicht in das Produktimage.
 
 Mit Java 25: `./gradlew test`. Die echte DB-/Browser-Integration läuft in
 den dafür vorgesehenen privaten Testkontexten. Der übergreifende Nachweis
-liegt bei [MA-G](../dateninfrastruktur-dev-stack/docs/implementation/storage-and-delivery/WORK_QUEUE.md).
+ist im [Betriebshandbuch](../dateninfrastruktur-dev-stack/docs/operations.md) beschrieben.
