@@ -99,6 +99,14 @@ jobs:
           cache-from: type=gha,scope=dateninfrastruktur-sodata-jvm-${{ matrix.architecture }}
           cache-to: type=gha,mode=max,scope=dateninfrastruktur-sodata-jvm-${{ matrix.architecture }}
 
+      - name: Smoke-test native image with PostgreSQL
+        id: native_smoke
+        run: bash tools/test-container.sh "$LOCAL_NATIVE_IMAGE" "${{ matrix.platform }}"
+
+      - name: Smoke-test JVM image with PostgreSQL
+        if: ${{ !cancelled() && (success() || steps.native_smoke.outcome == 'failure') }}
+        run: bash tools/test-container.sh "$LOCAL_JVM_IMAGE" "${{ matrix.platform }}"
+
       - name: Log in to Docker Hub
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
